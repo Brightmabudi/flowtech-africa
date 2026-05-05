@@ -102,3 +102,21 @@
     }
   }
 }
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background .2s, border-color .2s, transform .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(240, 144, 122, 0.15);
+    border-color: rgba(240, 144, 122, 0.4);
+    transform: rotate(15deg);
+  }
+}

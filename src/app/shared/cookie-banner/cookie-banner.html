@@ -1,0 +1,19 @@
+<div class="cookie-banner" [class.show]="showBanner">
+  <div class="cookie-content">
+    <div class="cookie-icon">🍪</div>
+    <div class="cookie-text">
+      <h4>We value your privacy</h4>
+      <p>
+        This website uses cookies to enhance your experience.
+        By continuing to browse, you agree to our
+        <a href="#">Privacy Policy</a> and
+        <a href="#">POPIA compliance</a> terms.
+        We do not sell your personal data.
+      </p>
+    </div>
+    <div class="cookie-actions">
+      <button class="btn-accept" (click)="accept()">Accept All</button>
+      <button class="btn-decline" (click)="decline()">Decline</button>
+    </div>
+  </div>
+</div>

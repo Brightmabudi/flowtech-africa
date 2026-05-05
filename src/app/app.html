@@ -2,3 +2,12 @@
 <app-navbar></app-navbar>
 <router-outlet></router-outlet>
 <app-footer></app-footer>
+
+<!-- BACK TO TOP BUTTON -->
+<button
+  class="back-to-top"
+  [class.visible]="showBackToTop"
+  (click)="scrollToTop()"
+  title="Back to top">
+  ↑
+</button>

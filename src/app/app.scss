@@ -1,0 +1,37 @@
+.back-to-top {
+  position: fixed;
+  bottom: 100px;
+  right: 28px;
+  z-index: 700;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6B3FA0, #F0907A);
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(240, 144, 122, 0.4);
+
+  // Hidden by default
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: opacity .3s, transform .3s, box-shadow .2s;
+
+  // Visible state
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  &:hover {
+    box-shadow: 0 8px 32px rgba(240, 144, 122, 0.55);
+    transform: translateY(-2px);
+  }
+}

@@ -1,15 +1,18 @@
 import { Component, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive],
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
 export class Navbar {
   isScrolled = false;
   menuOpen = false;
+  isDark = true;
 
   @HostListener('window:scroll')
   onScroll() {
@@ -22,5 +25,16 @@ export class Navbar {
 
   closeMenu() {
     this.menuOpen = false;
+  }
+
+  toggleTheme() {
+    this.isDark = !this.isDark;
+    if (this.isDark) {
+      document.body.classList.remove('light-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.classList.add('light-mode');
+      localStorage.setItem('theme', 'light');
+    }
   }
 }
