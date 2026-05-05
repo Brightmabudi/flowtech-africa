@@ -1,9 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-solutions',
-  imports: [],
+  standalone: true,
+  imports: [RouterLink],
   templateUrl: './solutions.html',
-  styleUrl: './solutions.scss',
+  styleUrl: './solutions.scss'
 })
-export class Solutions {}
+export class Solutions implements AfterViewInit {
+
+  ngAfterViewInit() {
+    this.initReveal();
+  }
+
+  initReveal() {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+  }
+}

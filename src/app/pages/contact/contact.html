@@ -1,1 +1,116 @@
-<p>contact works!</p>
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="eyebrow">Contact Us</div>
+  <h1 class="s-title">Let's Start a<br>Conversation</h1>
+  <p class="s-sub">Whether you have a specific project or just want to explore possibilities — we're ready to listen.</p>
+</div>
+
+<!-- CONTACT SECTION -->
+<section class="s-glass">
+  <div class="contact-grid">
+
+    <!-- LEFT INFO -->
+    <div data-reveal="left">
+      <div class="eyebrow">Get in Touch</div>
+      <h2 class="contact-h2">We respond within<br>one business day</h2>
+      <p class="contact-p">For urgent enquiries, please call us directly. We'd love to hear about your challenges and how we can help.</p>
+
+      <div class="c-cards">
+        <div class="c-card">
+          <div class="c-ico">📞</div>
+          <div>
+            <h4>Call Us</h4>
+            <p>+27 60 693 5814 (Cell)<br>+27 12 881 1930 (Office)</p>
+          </div>
+        </div>
+        <div class="c-card">
+          <div class="c-ico">🌐</div>
+          <div>
+            <h4>Website</h4>
+            <p>www.flowtech.africa</p>
+          </div>
+        </div>
+        <div class="c-card">
+          <div class="c-ico">📍</div>
+          <div>
+            <h4>Headquarters</h4>
+            <p>Pretoria, Gauteng<br>South Africa</p>
+          </div>
+        </div>
+        <div class="c-card">
+          <div class="c-ico">⏰</div>
+          <div>
+            <h4>Business Hours</h4>
+            <p>Monday – Friday: 08:00 – 17:00<br>Global delivery via virtual platform</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT FORM -->
+    <div class="c-form" data-reveal="right">
+      <div class="c-form-t">Send us a message</div>
+
+      <div class="f-row">
+        <div class="f-grp">
+          <label>First Name</label>
+          <input type="text" [(ngModel)]="form.firstName" placeholder="Thabo">
+        </div>
+        <div class="f-grp">
+          <label>Last Name</label>
+          <input type="text" [(ngModel)]="form.lastName" placeholder="Mokoena">
+        </div>
+      </div>
+
+      <div class="f-grp">
+        <label>Email Address</label>
+        <input type="email" [(ngModel)]="form.email" placeholder="thabo@company.co.za">
+      </div>
+
+      <div class="f-grp">
+        <label>Phone Number</label>
+        <input type="tel" [(ngModel)]="form.phone" placeholder="+27 xx xxx xxxx">
+      </div>
+
+      <div class="f-grp">
+        <label>I'm Interested In</label>
+        <select [(ngModel)]="form.interest">
+          <option value="">Select a service or solution...</option>
+          <option>Custom Software Development</option>
+          <option>ERP System</option>
+          <option>Business Intelligence / Dashboards</option>
+          <option>AI & Automation</option>
+          <option>Consulting Services</option>
+          <option>Training</option>
+          <option>Support & Maintenance</option>
+          <option>Book a Demo</option>
+        </select>
+      </div>
+
+      <div class="f-grp">
+        <label>Message</label>
+        <textarea [(ngModel)]="form.message" placeholder="Tell us about your business and what you're looking to achieve..."></textarea>
+      </div>
+
+      <button class="f-btn" (click)="submitForm()">Send Message →</button>
+
+      <div class="ok-msg" [class.show]="submitted">
+        ✅ Message sent! We'll be in touch within one business day.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="s-deeper" style="padding:52px 5vw">
+  <div class="nl-box" data-reveal>
+    <h3>Stay updated on digital transformation</h3>
+    <p>Industry insights and tips — delivered monthly, no spam ever.</p>
+    <div class="nl-row">
+      <input class="nl-in" type="email" [(ngModel)]="newsletter" placeholder="your@email.com">
+      <button class="nl-btn" (click)="subscribeNL()">Subscribe</button>
+    </div>
+    <p class="nl-ok" [class.show]="subscribed">✅ You're subscribed! Welcome aboard.</p>
+  </div>
+</section>
