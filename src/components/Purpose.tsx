@@ -1,7 +1,7 @@
 ﻿'use client'
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Heart, Target, Flame, Star, CheckCircle } from 'lucide-react'
+import { Heart, Target, Flame, Star, CheckCircle, Users, Globe, Award, TrendingUp } from 'lucide-react'
 
 const PILLARS = [
   {
@@ -34,6 +34,13 @@ const COMMITMENTS = [
   'Serving with integrity',
   'Treating every client with respect',
   'Putting your interests before our bottom line',
+]
+
+const RIGHT_STATS = [
+  { icon: <Users size={20} />,    color: '#5B35D5', num: '100+', label: 'Systems Delivered',    sub: 'Across Africa and globally'    },
+  { icon: <Globe size={20} />,    color: '#E8401A', num: '20+',  label: 'Years of Experience',  sub: 'Proven ICT expertise'          },
+  { icon: <Award size={20} />,    color: '#0EA5E9', num: 'L1',   label: 'B-BBEE Certified',     sub: 'Proudly South African'         },
+  { icon: <TrendingUp size={20} />, color: '#10B981', num: '0%', label: 'Licensing Fees',       sub: 'No restrictive costs ever'     },
 ]
 
 export default function Purpose() {
@@ -82,10 +89,7 @@ export default function Purpose() {
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      style={{ background: '#ffffff', padding: 'clamp(64px,8vw,112px) clamp(24px,6vw,100px)' }}
-    >
+    <section ref={sectionRef} style={{ background: '#ffffff', padding: 'clamp(64px,8vw,112px) clamp(24px,6vw,100px)' }}>
       <div className="max-w-7xl mx-auto">
 
         {/* Top banner */}
@@ -107,7 +111,7 @@ export default function Purpose() {
 
             <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
 
-              {/* Left — main message */}
+              {/* Left - main message */}
               <div style={{ padding: 'clamp(36px,5vw,64px)', borderRight: '1px solid rgba(255,255,255,.06)' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: '#E8401A', marginBottom: 16, fontFamily: 'JetBrains Mono, monospace' }}>
                   // Let Us Be Your Partners
@@ -118,10 +122,10 @@ export default function Purpose() {
                     Software Solution Partners
                   </span>
                 </h2>
-                <p style={{ fontSize: '.95rem', color: 'rgba(255,255,255,.55)', lineHeight: 1.85, marginBottom: 24 }}>
+                <p style={{ fontSize: '.95rem', color: 'rgba(255,255,255,.55)', lineHeight: 1.85, marginBottom: 28 }}>
                   At FlowTech Africa, our purpose is to glorify God in everything we do. We believe nothing is possible without God's blessing. That is why we create an environment where our staff can use their God-given gifts and talents to provide innovative solutions that meet your needs.
                 </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {COMMITMENTS.map(c => (
                     <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <CheckCircle size={16} style={{ color: '#10B981', flexShrink: 0 }} />
@@ -131,35 +135,30 @@ export default function Purpose() {
                 </div>
               </div>
 
-              {/* Right — scripture + verse */}
-              <div style={{ padding: 'clamp(36px,5vw,64px)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 20, padding: 32 }}>
-                  <div style={{ fontSize: 48, lineHeight: .7, color: 'rgba(91,53,213,.3)', fontFamily: 'Georgia, serif', marginBottom: 12 }}>"</div>
-                  <p style={{ fontSize: '1.05rem', color: 'rgba(255,255,255,.7)', lineHeight: 1.85, fontStyle: 'italic', marginBottom: 20 }}>
-                    Every valley shall be exalted, and every mountain and hill shall be made low: and the crooked shall be made straight, and the rough places plain.
-                  </p>
-                  <div style={{ height: 1, background: 'linear-gradient(90deg,rgba(232,64,26,.5),transparent)', marginBottom: 16 }} />
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#5B35D5,#E8401A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>
-                      +
+              {/* Right - stats grid */}
+              <div style={{ padding: 'clamp(36px,5vw,64px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 14 }}>
+                <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: 'rgba(255,255,255,.3)', letterSpacing: '.14em', textTransform: 'uppercase', marginBottom: 4 }}>
+                  // Why choose us
+                </div>
+                {RIGHT_STATS.map(({ icon, color, num, label, sub }) => (
+                  <div
+                    key={label}
+                    style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 14, padding: '16px 20px', transition: 'border-color .3s', cursor: 'default' }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(91,53,213,.35)')}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,.07)')}
+                  >
+                    <div style={{ width: 44, height: 44, borderRadius: 12, background: color + '18', border: '1px solid ' + color + '30', display: 'flex', alignItems: 'center', justifyContent: 'center', color, flexShrink: 0 }}>
+                      {icon}
                     </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'white', fontFamily: 'Cabinet Grotesk, sans-serif' }}>Isaiah 40:4</div>
-                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,.4)' }}>The Holy Bible</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: '1.4rem', fontWeight: 900, background: 'linear-gradient(135deg,' + color + ',#E8401A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1 }}>{num}</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'white', marginTop: 3, fontFamily: 'Cabinet Grotesk, sans-serif' }}>{label}</div>
+                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)', marginTop: 2 }}>{sub}</div>
                     </div>
                   </div>
-                </div>
-
-                {/* Floating stat */}
-                <div style={{ marginTop: 16, display: 'flex', gap: 12 }}>
-                  {[{ n: '20+', l: 'Years' },{ n: 'L1', l: 'B-BBEE' },{ n: '100%', l: 'Integrity' }].map(({ n, l }) => (
-                    <div key={l} style={{ flex: 1, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 14, padding: '16px 12px', textAlign: 'center' }}>
-                      <div style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: '1.5rem', fontWeight: 900, background: 'linear-gradient(135deg,#5B35D5,#E8401A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1 }}>{n}</div>
-                      <div style={{ fontSize: 10, color: 'rgba(255,255,255,.35)', marginTop: 4, fontFamily: 'JetBrains Mono, monospace', letterSpacing: '.06em' }}>{l}</div>
-                    </div>
-                  ))}
-                </div>
+                ))}
               </div>
+
             </div>
           </div>
         </motion.div>

@@ -3,17 +3,17 @@ import { useEffect, useState } from 'react'
 import { ArrowRight, ChevronRight, Shield, Zap, Cloud, Globe } from 'lucide-react'
 
 const STATS = [
-  { num: '500+',  label: 'Enterprise Clients' },
-  { num: '15+',   label: 'Years Experience'   },
-  { num: '99.9%', label: 'Uptime SLA'         },
-  { num: '24/7',  label: 'Human Support'      },
+  { num: '20+',  label: 'Years in ICT'       },
+  { num: 'L1',   label: 'B-BBEE Certified'   },
+  { num: '0%',   label: 'Licensing Fees'     },
+  { num: '100+', label: 'Systems Delivered'  },
 ]
 
 const BADGES = [
-  { cls: 'bf1', icon: <Shield size={13} />,  color: '#5B35D5', text: 'Zero-Trust Architecture' },
-  { cls: 'bf2', icon: <Zap size={13} />,     color: '#E8401A', text: '847 Mbps Avg Throughput' },
-  { cls: 'bf3', icon: <Cloud size={13} />,   color: '#0EA5E9', text: 'Multi-Cloud Ready'        },
-  { cls: 'bf4', icon: <Globe size={13} />,   color: '#F5C842', text: '14 African Countries'     },
+  { cls: 'bf1', icon: 'Shield',  color: '#5B35D5', text: 'Zero-Trust Architecture' },
+  { cls: 'bf2', icon: 'Zap',     color: '#E8401A', text: '847 Mbps Avg Throughput' },
+  { cls: 'bf3', icon: 'Cloud',   color: '#0EA5E9', text: 'Multi-Cloud Ready'        },
+  { cls: 'bf4', icon: 'Globe',   color: '#F5C842', text: '14 African Countries'     },
 ]
 
 const WORDS = ['Cloud Infrastructure', 'Cybersecurity', 'Managed IT Services', 'Digital Transformation']
@@ -33,21 +33,24 @@ export default function Hero() {
     return () => clearInterval(interval)
   }, [])
 
+  const badgeIcons: Record<string, React.ReactNode> = {
+    Shield: <Shield size={13} />,
+    Zap:    <Zap size={13} />,
+    Cloud:  <Cloud size={13} />,
+    Globe:  <Globe size={13} />,
+  }
+
+  const badgePositions: Record<string, React.CSSProperties> = {
+    bf1: { top: '24%',    left: '6%'   },
+    bf2: { top: '38%',    right: '5%'  },
+    bf3: { bottom: '30%', left: '7%'   },
+    bf4: { bottom: '22%', right: '7%'  },
+  }
+
   return (
     <section
       id="home"
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        padding: '120px clamp(24px,8vw,160px) 80px',
-        position: 'relative',
-        overflow: 'hidden',
-        background: 'linear-gradient(135deg,#08050F 0%,#11091E 50%,#1A0A38 100%)',
-      }}
+      style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px clamp(24px,8vw,160px) 80px', position: 'relative', overflow: 'hidden', background: 'linear-gradient(135deg,#08050F 0%,#11091E 50%,#1A0A38 100%)' }}
     >
       {/* Mesh bg */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse 100% 80% at 50% -10%,rgba(59,31,168,.55) 0%,transparent 60%), radial-gradient(ellipse 60% 50% at 20% 60%,rgba(91,53,213,.2) 0%,transparent 50%), radial-gradient(ellipse 50% 40% at 80% 70%,rgba(232,64,26,.12) 0%,transparent 50%)' }} />
@@ -64,9 +67,9 @@ export default function Hero() {
       {BADGES.map((b, i) => (
         <div
           key={b.cls}
-          className={b.cls}
           style={{
             position: 'absolute',
+            ...badgePositions[b.cls],
             display: 'inline-flex', alignItems: 'center', gap: 8,
             padding: '8px 14px', borderRadius: 100,
             fontSize: 12, fontWeight: 600,
@@ -77,13 +80,9 @@ export default function Hero() {
             animation: 'floatBadge ' + (4 + i * 0.5) + 's ease-in-out infinite',
             animationDelay: (i * 0.8) + 's',
             pointerEvents: 'none', whiteSpace: 'nowrap',
-            ...(b.cls === 'bf1' ? { top: '24%', left: '6%' }   : {}),
-            ...(b.cls === 'bf2' ? { top: '38%', right: '5%' }  : {}),
-            ...(b.cls === 'bf3' ? { bottom: '30%', left: '7%' }: {}),
-            ...(b.cls === 'bf4' ? { bottom: '22%', right: '7%' }: {}),
           }}
         >
-          <span style={{ color: b.color }}>{b.icon}</span>
+          <span style={{ color: b.color }}>{badgeIcons[b.icon]}</span>
           {b.text}
         </div>
       ))}
@@ -105,18 +104,10 @@ export default function Hero() {
           </span>
         </h1>
 
-        {/* Rotating service label */}
+        {/* Rotating label */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20, animation: 'fadeUp .9s .12s both' }}>
           <span style={{ fontSize: 13, color: 'rgba(255,255,255,.4)', fontFamily: 'JetBrains Mono, monospace' }}>Delivering</span>
-          <span style={{
-            fontSize: 14, fontWeight: 700, color: '#5B35D5',
-            fontFamily: 'Cabinet Grotesk, sans-serif',
-            transition: 'opacity .4s',
-            opacity: fade ? 1 : 0,
-            background: 'rgba(91,53,213,.12)',
-            border: '1px solid rgba(91,53,213,.25)',
-            padding: '4px 14px', borderRadius: 100,
-          }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: '#5B35D5', fontFamily: 'Cabinet Grotesk, sans-serif', transition: 'opacity .4s', opacity: fade ? 1 : 0, background: 'rgba(91,53,213,.12)', border: '1px solid rgba(91,53,213,.25)', padding: '4px 14px', borderRadius: 100 }}>
             {WORDS[wordIndex]}
           </span>
         </div>
@@ -124,18 +115,20 @@ export default function Hero() {
         {/* Sub */}
         <p style={{ fontSize: 'clamp(1rem,1.8vw,1.15rem)', color: 'rgba(255,255,255,.5)', maxWidth: 560, margin: '0 auto 44px', lineHeight: 1.8, animation: 'fadeUp .9s .16s both' }}>
           FlowTech Africa delivers enterprise-grade cloud, cybersecurity, and managed IT services
-          to organisations across Sub-Saharan Africa — from agile SMEs to large corporates.
+          to organisations across Sub-Saharan Africa - from agile SMEs to large corporates.
         </p>
 
         {/* CTAs */}
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', animation: 'fadeUp .9s .24s both' }}>
-          <a href="#solutions" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '15px 30px', borderRadius: 12, fontSize: 15, fontWeight: 700, background: 'linear-gradient(135deg,#2D1580,#5B35D5)', color: 'white', textDecoration: 'none', boxShadow: '0 0 40px rgba(91,53,213,.4)', fontFamily: 'Cabinet Grotesk, sans-serif', transition: 'transform .2s, box-shadow .2s' }}
+          <a href="#solutions"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '15px 30px', borderRadius: 12, fontSize: 15, fontWeight: 700, background: 'linear-gradient(135deg,#2D1580,#5B35D5)', color: 'white', textDecoration: 'none', boxShadow: '0 0 40px rgba(91,53,213,.4)', fontFamily: 'Cabinet Grotesk, sans-serif', transition: 'transform .2s, box-shadow .2s' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 40px rgba(91,53,213,.6)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 40px rgba(91,53,213,.4)'; }}
           >
             Explore Solutions <ArrowRight size={16} />
           </a>
-          <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 30px', borderRadius: 12, fontSize: 15, fontWeight: 500, background: 'rgba(255,255,255,.05)', color: 'rgba(255,255,255,.8)', border: '1px solid rgba(255,255,255,.12)', textDecoration: 'none', backdropFilter: 'blur(8px)', fontFamily: 'Cabinet Grotesk, sans-serif', transition: 'all .2s' }}
+          <a href="#contact"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 30px', borderRadius: 12, fontSize: 15, fontWeight: 500, background: 'rgba(255,255,255,.05)', color: 'rgba(255,255,255,.8)', border: '1px solid rgba(255,255,255,.12)', textDecoration: 'none', backdropFilter: 'blur(8px)', fontFamily: 'Cabinet Grotesk, sans-serif', transition: 'all .2s' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.09)'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.05)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.8)'; }}
           >
@@ -162,9 +155,9 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* Trust badges row */}
+        {/* Trust badges */}
         <div style={{ display: 'flex', gap: 12, marginTop: 28, flexWrap: 'wrap', justifyContent: 'center', animation: 'fadeUp .9s .5s both' }}>
-          {['ISO 27001', 'ISO 9001', 'COBIT 5', 'B-BBEE L2', 'Microsoft Gold'].map(b => (
+          {['ISO 27001', 'ISO 9001', 'COBIT 5', 'B-BBEE L1', 'Microsoft Gold'].map(b => (
             <span key={b} style={{ fontSize: 10, padding: '4px 12px', border: '1px solid rgba(255,255,255,.1)', borderRadius: 100, color: 'rgba(255,255,255,.35)', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '.06em' }}>
               {b}
             </span>
