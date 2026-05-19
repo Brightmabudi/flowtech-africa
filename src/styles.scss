@@ -10,19 +10,20 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background: #3D1A6E;
-  color: #ffffff;
+  background: #FFFFFF;
+  color: #1A0A38;
   overflow-x: hidden;
   min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5 {
   font-family: 'Syne', sans-serif;
+  line-height: 1.15;
 }
 
 a { cursor: pointer; }
 
-// TECH BACKGROUND CANVAS
+// TECH CANVAS
 #tech-canvas {
   position: fixed;
   inset: 0;
@@ -33,230 +34,52 @@ a { cursor: pointer; }
 
 .tech-icon {
   position: absolute;
-  font-size: 26px;
-  opacity: 0.1;
+  font-size: 24px;
+  opacity: 0.06;
   animation: techFloat linear infinite;
   user-select: none;
-  color: #B89DC8;
+  color: #3D1A6E;
 }
 
 @keyframes techFloat {
   0%   { transform: translateY(110vh) rotate(0deg);    opacity: 0; }
-  5%   { opacity: 0.1; }
-  95%  { opacity: 0.1; }
+  5%   { opacity: 0.06; }
+  95%  { opacity: 0.06; }
   100% { transform: translateY(-120px) rotate(360deg); opacity: 0; }
 }
 
-// AMBIENT BACKGROUND
-body::before {
-  content: '';
+// BACK TO TOP
+.back-to-top {
   position: fixed;
-  inset: 0;
-  z-index: 0;
+  bottom: 100px;
+  right: 28px;
+  z-index: 700;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3D1A6E, #F0907A);
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(61, 26, 110, 0.3);
+  opacity: 0;
+  transform: translateY(20px);
   pointer-events: none;
-  background:
-    radial-gradient(ellipse 70% 50% at 15% 20%, rgba(107,63,160,0.55) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 45% at 85% 75%, rgba(240,144,122,0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(79,36,128,0.4) 0%, transparent 70%);
-}
+  transition: opacity .3s, transform .3s, box-shadow .2s;
 
-// GRID LINES
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(184,157,200,0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(184,157,200,0.07) 1px, transparent 1px);
-  background-size: 56px 56px;
-}
-
-// Make sure all page content sits above background
-app-navbar,
-app-footer,
-router-outlet + * {
-  position: relative;
-  z-index: 2;
-}
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   LIGHT MODE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-body.light-mode {
-  background: #F0EBF8;
-  color: #1A0A38;
-
-  // Navbar
-  nav {
-    background: rgba(240, 235, 248, 0.92) !important;
-    border-bottom: 1px solid rgba(107, 63, 160, 0.15) !important;
-
-    .nav-links a {
-      color: #3D1A6E !important;
-      &:hover { background: rgba(107, 63, 160, 0.08) !important; }
-      &.active { color: #F0907A !important; }
-    }
-
-    .hamburger span {
-      background: #3D1A6E !important;
-    }
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
   }
 
-  // Ambient background
-  &::before {
-    background:
-      radial-gradient(ellipse 70% 50% at 15% 20%, rgba(184, 157, 200, 0.4) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 45% at 85% 75%, rgba(240, 144, 122, 0.15) 0%, transparent 55%),
-      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(196, 160, 232, 0.3) 0%, transparent 70%) !important;
+  &:hover {
+    box-shadow: 0 8px 32px rgba(61, 26, 110, 0.45);
+    transform: translateY(-2px);
   }
-
-  // Cards
-  .scard, .wc, .tc, .sol-card,
-  .bc, .mv, .c-card, .c-form {
-    background: rgba(255, 255, 255, 0.85) !important;
-    border-color: rgba(107, 63, 160, 0.15) !important;
-    color: #1A0A38 !important;
-  }
-
-  // Section backgrounds
-  .s-glass {
-    background: rgba(240, 235, 248, 0.6) !important;
-  }
-
-  .s-deeper {
-    background: rgba(220, 210, 235, 0.5) !important;
-  }
-
-  // Text colors
-  .s-title { color: #1A0A38 !important; }
-  .s-sub   { color: rgba(26, 10, 56, 0.6) !important; }
-  .scard-title, .wc-t, .tc-name,
-  .sc-title, .bc-label { color: #1A0A38 !important; }
-  .scard-desc, .wc-d, .tc-text,
-  .sc-desc, .bc-sub { color: rgba(26, 10, 56, 0.6) !important; }
-
-  // Hero
-  .hero-h1 { color: #1A0A38 !important; }
-  .hero-p  { color: rgba(26, 10, 56, 0.6) !important; }
-  .hero-stats {
-    background: rgba(255, 255, 255, 0.7) !important;
-    border-color: rgba(107, 63, 160, 0.15) !important;
-  }
-  .hs-l { color: rgba(26, 10, 56, 0.6) !important; }
-
-  // Footer
-  footer {
-    background: rgba(61, 26, 110, 0.9) !important;
-  }
-
-  // Tech icons
-  .tech-icon {
-    color: #6B3FA0 !important;
-    opacity: 0.08 !important;
-  }
-
-  // Navbar scrolled
-  nav.scrolled {
-    background: rgba(240, 235, 248, 0.98) !important;
-  }
-
-  // Mobile menu
-  .mob-menu {
-    background: rgba(240, 235, 248, 0.98) !important;
-  }
-
-  // Page hero
-  .page-hero {
-    background: rgba(220, 210, 235, 0.5) !important;
-  }
-
-  // Stats box
-  .stats-box, .sc2 {
-    background: rgba(255, 255, 255, 0.7) !important;
-    border-color: rgba(107, 63, 160, 0.15) !important;
-  }
-
-  .sc2-l { color: rgba(26, 10, 56, 0.6) !important; }
-  .about-text p { color: rgba(26, 10, 56, 0.6) !important; }
-  .about-text h2 { color: #1A0A38 !important; }
-
-  // Service items
-  .svc-item {
-    background: rgba(255, 255, 255, 0.85) !important;
-    border-color: rgba(107, 63, 160, 0.15) !important;
-  }
-
-  .svc-item h2 { color: #1A0A38 !important; }
-  .svc-item p  { color: rgba(26, 10, 56, 0.6) !important; }
-  .feat        { color: rgba(26, 10, 56, 0.8) !important; }
-  .svc-vis {
-    background: rgba(240, 235, 248, 0.8) !important;
-    border-color: rgba(107, 63, 160, 0.15) !important;
-  }
-
-  // Contact
-  .c-form {
-    background: rgba(255, 255, 255, 0.9) !important;
-  }
-
-  .f-grp input,
-  .f-grp textarea,
-  .f-grp select {
-    background: rgba(240, 235, 248, 0.8) !important;
-    border-color: rgba(107, 63, 160, 0.2) !important;
-    color: #1A0A38 !important;
-
-    &::placeholder { color: rgba(26, 10, 56, 0.35) !important; }
-  }
-
-  .c-form-t    { color: #1A0A38 !important; }
-  .contact-h2  { color: #1A0A38 !important; }
-  .contact-p   { color: rgba(26, 10, 56, 0.6) !important; }
-  .c-card p    { color: rgba(26, 10, 56, 0.6) !important; }
-
-  // Newsletter
-  .nl-box {
-    background: rgba(255, 255, 255, 0.85) !important;
-    border-color: rgba(107, 63, 160, 0.15) !important;
-
-    h3 { color: #1A0A38 !important; }
-    p  { color: rgba(26, 10, 56, 0.6) !important; }
-  }
-
-  .nl-in {
-    background: rgba(240, 235, 248, 0.8) !important;
-    border-color: rgba(107, 63, 160, 0.2) !important;
-    color: #1A0A38 !important;
-
-    &::placeholder { color: rgba(26, 10, 56, 0.35) !important; }
-  }
-
-  // Mission vision
-  .mv {
-    background: rgba(255, 255, 255, 0.85) !important;
-    border-color: rgba(107, 63, 160, 0.15) !important;
-
-    h3 { color: #1A0A38 !important; }
-    p  { color: rgba(26, 10, 56, 0.6) !important; }
-  }
-
-  // CTA box
-  .cta-box {
-    background: linear-gradient(135deg,
-      rgba(107, 63, 160, 0.8),
-      rgba(61, 26, 110, 0.9)) !important;
-  }
-
-  // Cookie banner
-  .cookie-banner {
-    background: rgba(255, 255, 255, 0.97) !important;
-    border-color: rgba(107, 63, 160, 0.2) !important;
-
-    h4 { color: #1A0A38 !important; }
-    p  { color: rgba(26, 10, 56, 0.6) !important; }
-  }
-
-  // Loader
-  .loader { background: #F0EBF8 !important; }
 }
