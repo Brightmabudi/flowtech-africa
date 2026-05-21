@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer'
 
 export async function POST(req: NextRequest) {
   try {
-    const { firstName, lastName, email, companySize, service, message } = await req.json()
+    const { firstName, lastName, email, phone, companySize, service, message } = await req.json()
 
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
       + '<table style="width:100%;border-collapse:collapse;margin-bottom:28px">'
       + '<tr><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;color:#6B5F8A;font-size:13px;font-weight:700;width:130px">Full Name</td><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;color:#0D0720;font-size:14px;font-weight:600">' + firstName + ' ' + lastName + '</td></tr>'
       + '<tr><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;color:#6B5F8A;font-size:13px;font-weight:700">Email</td><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;font-size:14px"><a href="mailto:' + email + '" style="color:#5B35D5;text-decoration:none;font-weight:600">' + email + '</a></td></tr>'
+      + '<tr><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;color:#6B5F8A;font-size:13px;font-weight:700">Phone</td><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;font-size:14px"><a href="tel:' + phone + '" style="color:#5B35D5;text-decoration:none">' + (phone || 'Not provided') + '</a></td></tr>'
       + '<tr><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;color:#6B5F8A;font-size:13px;font-weight:700">Company Size</td><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;color:#0D0720;font-size:14px">' + companySize + '</td></tr>'
       + '<tr><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;color:#6B5F8A;font-size:13px;font-weight:700">Service</td><td style="padding:12px 0;border-bottom:1px solid #F0EDF8;font-size:14px"><span style="background:rgba(91,53,213,0.08);color:#5B35D5;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700">' + service + '</span></td></tr>'
       + '</table>'
