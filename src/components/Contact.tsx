@@ -10,15 +10,12 @@ const INFO = [
   { icon: <Clock size={15} />, title: 'SUPPORT',       body: '24/7 NOC & Helpdesk\nRound-the-clock human support' },
 ]
 
-const inputStyle = { padding: '12px 16px', border: '1px solid rgba(91,53,213,.15)', borderRadius: 10, fontSize: 14, fontFamily: 'Instrument Sans, sans-serif', color: '#0D0720', background: '#F8F5FF', outline: 'none', width: '100%', boxSizing: 'border-box' as const }
-const labelStyle = { fontSize: 10, fontWeight: 700, color: 'rgba(13,7,32,.4)', letterSpacing: '.12em', textTransform: 'uppercase' as const, fontFamily: 'JetBrains Mono, monospace' }
-const fieldStyle = { display: 'flex', flexDirection: 'column' as const, gap: 7, marginBottom: 16 }
+const inputStyle: React.CSSProperties = { padding: '12px 16px', border: '1px solid rgba(91,53,213,.15)', borderRadius: 10, fontSize: 14, fontFamily: 'Instrument Sans, sans-serif', color: '#0D0720', background: '#F8F5FF', outline: 'none', width: '100%', boxSizing: 'border-box' }
+const labelStyle: React.CSSProperties = { fontSize: 10, fontWeight: 700, color: 'rgba(13,7,32,.4)', letterSpacing: '.12em', textTransform: 'uppercase', fontFamily: 'JetBrains Mono, monospace' }
+const fieldStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 16 }
 
 export default function Contact() {
-  const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', phone: '',
-    companySize: '1 - 50 employees', service: 'Cloud Infrastructure', message: ''
-  })
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', companySize: '1 - 50 employees', service: 'Cloud Infrastructure', message: '' })
   const [sent, setSent]       = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState('')
@@ -49,7 +46,7 @@ export default function Contact() {
 
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ duration: 0.55 }} style={{ marginBottom: 56 }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: '#E8401A', marginBottom: 14, fontFamily: 'JetBrains Mono, monospace' }}>
-            // Get In Touch
+            Get In Touch
           </span>
           <h2 style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: 'clamp(2rem,3.5vw,3rem)', fontWeight: 900, letterSpacing: '-.035em', color: '#0D0720', marginBottom: 14 }}>
             Let us Build Something{' '}
@@ -65,10 +62,9 @@ export default function Contact() {
 
         <div className="contact-layout">
 
-          {/* Left */}
           <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ duration: 0.6 }}>
             <p style={{ fontSize: '.95rem', color: '#4A3F6B', lineHeight: 1.8, marginBottom: 28 }}>
-              Whether you need a quick quote, a full solution design, or just want to understand what is possible — our team is here.
+              Whether you need a quick quote, a full solution design, or just want to understand what is possible for your organisation - our team is here.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {INFO.map(({ icon, title, body }) => (
@@ -96,7 +92,6 @@ export default function Contact() {
             </div>
           </motion.div>
 
-          {/* Right - Form */}
           <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ duration: 0.6, delay: 0.1 }}>
             <div style={{ background: '#ffffff', border: '1px solid rgba(91,53,213,.1)', borderRadius: 20, padding: 'clamp(28px,4vw,48px)', boxShadow: '0 4px 24px rgba(91,53,213,.08)' }}>
               <div style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: '1.3rem', fontWeight: 900, color: '#0D0720', marginBottom: 28, letterSpacing: '-.02em' }}>
@@ -111,8 +106,6 @@ export default function Contact() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
-
-                  {/* Name row */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                     <div style={fieldStyle}>
                       <label style={labelStyle}>First Name</label>
@@ -123,20 +116,14 @@ export default function Contact() {
                       <input type="text" placeholder="Nkosi" required value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} style={inputStyle} />
                     </div>
                   </div>
-
-                  {/* Email */}
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Work Email</label>
                     <input type="email" placeholder="sipho@company.co.za" required value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={inputStyle} />
                   </div>
-
-                  {/* Phone */}
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Cell Phone Number</label>
                     <input type="tel" placeholder="+27 xx xxx xxxx" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={inputStyle} />
                   </div>
-
-                  {/* Company + Service row */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                     <div style={fieldStyle}>
                       <label style={labelStyle}>Company Size</label>
@@ -163,19 +150,15 @@ export default function Contact() {
                       </select>
                     </div>
                   </div>
-
-                  {/* Message */}
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Message</label>
                     <textarea placeholder="Tell us about your challenge or project..." required value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} style={{ ...inputStyle, resize: 'vertical', minHeight: 120 }} />
                   </div>
-
                   {error && (
                     <div style={{ padding: 14, marginBottom: 14, background: 'rgba(232,64,26,.08)', border: '1px solid rgba(232,64,26,.2)', borderRadius: 10, color: '#E8401A', fontSize: 13 }}>
                       {error}
                     </div>
                   )}
-
                   <button type="submit" disabled={loading}
                     style={{ width: '100%', padding: 14, background: loading ? 'rgba(91,53,213,.5)' : 'linear-gradient(135deg,#2D1580,#5B35D5)', color: 'white', border: 'none', borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'Cabinet Grotesk, sans-serif', boxShadow: '0 4px 20px rgba(91,53,213,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                     onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLElement).style.opacity = '.9'; }}
@@ -183,7 +166,6 @@ export default function Contact() {
                   >
                     {loading ? <><Loader2 size={16} className="animate-spin" /> Sending...</> : 'Send Message'}
                   </button>
-
                 </form>
               )}
             </div>

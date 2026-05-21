@@ -1,18 +1,18 @@
-/* ─────────────────────────────────────────────
+﻿/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    TAILWIND DIRECTIVES  (must stay at the top)
-───────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    GOOGLE FONTS
-───────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @import url('https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    DESIGN TOKENS
-───────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root {
   /* Backgrounds */
   --ink:     #08050F;
@@ -43,9 +43,9 @@
   --rxl: 28px;
 }
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    RESET & BASE
-───────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth;
@@ -61,24 +61,24 @@ body {
   line-height: 1.6;
 }
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    SCROLLBAR
-───────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 ::-webkit-scrollbar             { width: 4px; }
 ::-webkit-scrollbar-track       { background: #FFFFFF; }
 ::-webkit-scrollbar-thumb       { background: var(--violet); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--coral); }
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    SELECTION
-───────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 ::selection { background: rgba(109,74,232,0.35); color: white; }
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    NOISE GRAIN OVERLAY
    SVG feTurbulence fractalNoise at 0.5 opacity
-   with overlay blend — adds organic texture
-───────────────────────────────────────────── */
+   with overlay blend â€” adds organic texture
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 body::after {
   content: '';
   position: fixed; inset: 0;
@@ -88,11 +88,11 @@ body::after {
   mix-blend-mode: overlay;
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    KEYFRAME ANIMATIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 
-/* Animated gradient text shift — used on hero headline */
+/* Animated gradient text shift â€” used on hero headline */
 @keyframes gradShift {
   0%   { background-position: 0%   50%; }
   50%  { background-position: 100% 50%; }
@@ -113,7 +113,7 @@ body::after {
   100% { transform: translateY(-120px)  rotate(360deg); opacity: 0;    }
 }
 
-/* Orbit ring rotation — concentric circles in Hero */
+/* Orbit ring rotation â€” concentric circles in Hero */
 @keyframes orbitSpin {
   from { transform: translate(-50%,-50%) rotate(0deg);   }
   to   { transform: translate(-50%,-50%) rotate(360deg); }
@@ -162,9 +162,9 @@ body::after {
   to   { transform: translateX(-50%);  }
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    LOADING SCREEN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 #loader {
   position: fixed; inset: 0; z-index: 9000;
   background: #FFFFFF;
@@ -177,9 +177,9 @@ body::after {
 .loader-bar   { height: 100%; background: linear-gradient(90deg,var(--violet),var(--coral)); border-radius: 2px; animation: loadBar 2s cubic-bezier(.4,0,.2,1) forwards; }
 .loader-label { font-size: 11px; color: var(--muted); letter-spacing: .15em; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    CUSTOM CURSOR
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .cur { position: fixed; pointer-events: none; z-index: 8000; mix-blend-mode: difference; }
 
 .cur-dot {
@@ -193,15 +193,15 @@ body::after {
 }
 body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-color: rgba(91,53,213,0.8); }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    PAGE TRANSITION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .page        { display: none; animation: pageIn .5s cubic-bezier(.22,1,.36,1) both; }
 .page.active { display: block; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    TECH CANVAS BACKGROUND
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 #tech-canvas {
   position: fixed; inset: 0;
   z-index: 0; pointer-events: none; overflow: hidden;
@@ -212,9 +212,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
   user-select: none; color: var(--violet);
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    SCROLL REVEAL
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 [data-r] {
   opacity: 0; transform: translateY(28px);
   transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1);
@@ -234,18 +234,18 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 [data-d="5"] { transition-delay: .30s; }
 [data-d="6"] { transition-delay: .36s; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    GLASS UTILITY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .glass {
   background: rgba(8,5,15,.75);
   backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    BACK TO TOP
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .back-to-top {
   position: fixed; bottom: 96px; right: 28px; z-index: 700;
   width: 42px; height: 42px; border-radius: 50%;
@@ -260,33 +260,23 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
 .back-to-top:hover   { background: rgba(109,74,232,0.3); }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    SECTION SYSTEM
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .sec        { padding: clamp(64px,8vw,112px) clamp(24px,6vw,100px); }
 .sec-dark   { background: #FFFFFF;  position: relative; z-index: 2; }
 .sec-darker { background: #F0EDF8; position: relative; z-index: 2; }
 .sec-light  { background: #FFFFFF;     position: relative; z-index: 2; }
 .sec-purple { background: linear-gradient(135deg,#1A0A5E,#2D1878); position: relative; z-index: 2; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    TYPOGRAPHY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.eyebrow { color: #E8401A;
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--coral); margin-bottom: 16px;
-  font-family: 'JetBrains Mono', monospace;
-}
-.eyebrow::before { content: '//'; color: var(--violet); margin-right: 2px; }
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #E8401A; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
+.eyebrow::before { content: ''; display: inline-block; width: 28px; height: 2px; background: linear-gradient(90deg,#E8401A,#5B35D5); border-radius: 2px; }
 
-.sec-title {
-  font-family: 'Cabinet Grotesk', sans-serif;
-  font-size: clamp(2rem,3.5vw,3rem); font-weight: 900;
-  letter-spacing: -.035em; line-height: 1.05;
-  color: #0D0720; margin-bottom: 16px;
-}
-.sec-light .sec-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: clamp(2rem,3.5vw,3rem); font-weight: 900; letter-spacing: -.035em; line-height: 1.05; color: #0D0720; margin-bottom: 16px; }
+.sec-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: clamp(2.6rem,5vw,4rem); font-weight: 900; letter-spacing: -.04em; line-height: 1.0; color: #0D0720; margin-bottom: 20px; }
+.sec-light .sec-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: clamp(2.6rem,5vw,4rem); font-weight: 900; letter-spacing: -.04em; line-height: 1.0; color: #0D0720; margin-bottom: 20px; }
 
 .sec-sub  { font-size: 1rem; color: #4A3F6B; max-width: 500px; line-height: 1.8; }
 .sec-light .sec-sub   { color: #6B5F8A; }
@@ -294,9 +284,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .sec-head.center      { text-align: center; }
 .sec-head.center .sec-sub { margin: 0 auto; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    BUTTONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .btn-primary {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 14px 28px; border-radius: 12px; font-size: 15px; font-weight: 600;
@@ -339,9 +329,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 }
 .btn-primary-sm:hover { background: #7B5AEC; box-shadow: 0 0 24px rgba(109,74,232,.5); }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    HERO SECTION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .hero {
   min-height: 100vh; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
@@ -358,7 +348,7 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
     radial-gradient(ellipse 50%  40% at 80%  70%,rgba(255,92,58,.12)  0%,transparent 50%);
 }
 
-/* Dot-grid lines — masked to fade at edges */
+/* Dot-grid lines â€” masked to fade at edges */
 .hero-grid {
   position: absolute; inset: 0; pointer-events: none;
   background-image:
@@ -368,7 +358,7 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
   mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 80%);
 }
 
-/* Orbit rings — use orbitSpin keyframe */
+/* Orbit rings â€” use orbitSpin keyframe */
 .orbit {
   position: absolute; border-radius: 50%; border: 1px solid; pointer-events: none;
   left: 50%; top: 45%; transform: translate(-50%,-50%);
@@ -486,9 +476,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 }
 .hstat-l { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 4px; letter-spacing: .06em; text-transform: uppercase; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    SERVICE CARDS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .svc-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 16px; }
 
 .svc-card {
@@ -512,9 +502,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .svc-arrow { display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--violet); font-weight:600; margin-top:18px; text-decoration:none; cursor:pointer; transition:gap .2s,color .2s; }
 .svc-arrow:hover { gap: 9px; color: var(--coral); }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    TECH IMAGE SPLIT LAYOUT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px,6vw,100px); align-items: center; margin-bottom: clamp(60px,8vw,112px); }
 .split:last-child { margin-bottom: 0; }
 .split.rev      { direction: rtl; }
@@ -546,9 +536,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .img-badge span  { font-size:12px; font-weight:600; color:white; display:block; }
 .img-badge small { font-size:11px; color:rgba(255,255,255,.4); }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    WHY-US CARDS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .why-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
 
 .wcard {
@@ -569,9 +559,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .wtitle { font-family:'Cabinet Grotesk',sans-serif; font-size:1rem; font-weight:800; color:#0D0720; margin-bottom:8px; letter-spacing:-.01em; }
 .wsub   { font-size:.85rem; color:#4A3F6B; line-height:1.65; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    TESTIMONIALS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
 
 .tcard {
@@ -590,9 +580,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .tcard-name  { font-size:13px; font-weight:600; color:white; font-family:'Cabinet Grotesk',sans-serif; }
 .tcard-role  { font-size:11px; color:rgba(255,255,255,.35); margin-top:2px; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    CTA BLOCK
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .cta-block {
   background: linear-gradient(135deg,#1A0A5E 0%,#3B1FA8 50%,#1A0A5E 100%);
   border-radius: var(--rxl); padding: clamp(48px,6vw,96px) clamp(32px,6vw,80px);
@@ -626,9 +616,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .cta-p    { color:rgba(255,255,255,.5); font-size:1rem; margin-bottom:36px; line-height:1.7; max-width:460px; margin-left:auto; margin-right:auto; }
 .cta-acts { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    PARTNER TICKER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .ticker-wrap  { overflow:hidden; padding:36px 0; border-top:1px solid var(--border2); border-bottom:1px solid var(--border2); background:var(--ink2); }
 .ticker       { display:flex; animation:tick 22s linear infinite; }
 .ticker-inner { display:flex; align-items:center; gap:56px; padding:0 28px; flex-shrink:0; }
@@ -636,9 +626,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .ticker-item:hover { color: rgba(255,255,255,.45); }
 .ticker-dot   { width:4px; height:4px; background:var(--violet); border-radius:50%; flex-shrink:0; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    BENTO / SOLUTIONS GRID
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .bento { display:grid; grid-template-columns:repeat(12,1fr); grid-auto-rows:auto; gap:16px; }
 
 .bcard {
@@ -665,18 +655,18 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .mc-bar      { flex:1; border-radius:4px 4px 0 0; background:linear-gradient(to top,rgba(109,74,232,.3),rgba(255,92,58,.3)); transition:height .9s cubic-bezier(.22,1,.36,1); }
 .mc-bar.active { background: linear-gradient(to top,var(--violet),var(--coral)); }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    PAGE HERO (inner pages)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .page-hero { padding:clamp(100px,12vw,160px) clamp(24px,6vw,100px) clamp(60px,6vw,80px); position:relative; overflow:hidden; background:linear-gradient(160deg,var(--ink2) 0%,var(--ink) 100%); }
 .page-hero-bg { position:absolute; inset:0; pointer-events:none; background: radial-gradient(ellipse 80% 60% at 30% 50%,rgba(59,31,168,.3) 0%,transparent 60%), radial-gradient(ellipse 60% 40% at 75% 30%,rgba(255,92,58,.12) 0%,transparent 50%); }
 .page-hero-content { position:relative; z-index:1; max-width:680px; }
 .page-hero h1 { font-family:'Cabinet Grotesk',sans-serif; font-size:clamp(2.4rem,5vw,4.5rem); font-weight:900; letter-spacing:-.04em; line-height:1; color:white; margin-bottom:18px; }
 .page-hero p  { font-size:1.1rem; color:rgba(255,255,255,.45); line-height:1.75; max-width:520px; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    ABOUT PAGE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .about-grid    { display:grid; grid-template-columns:1fr 1fr; gap:clamp(40px,6vw,80px); align-items:center; }
 .about-text h2 { font-family:'Cabinet Grotesk',sans-serif; font-size:clamp(1.6rem,2.5vw,2.3rem); font-weight:900; letter-spacing:-.03em; color:white; margin-bottom:18px; line-height:1.1; }
 .about-text p  { font-size:.93rem; color:rgba(255,255,255,.4); line-height:1.8; margin-bottom:14px; }
@@ -697,9 +687,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .mv-card h3  { font-family:'Cabinet Grotesk',sans-serif; font-size:1rem; font-weight:800; color:#0D0720; margin-bottom:8px; letter-spacing:-.01em; }
 .mv-card p   { font-size:.88rem; color:rgba(255,255,255,.38); line-height:1.75; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    SOLUTIONS CARDS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .sol-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
 .sol-card { background:rgba(255,255,255,.02); border:1px solid var(--border2); border-radius:var(--rl); overflow:hidden; transition:border-color .3s,transform .25s,box-shadow .3s; cursor:default; }
 .sol-card:hover { border-color:rgba(109,74,232,.35); transform:translateY(-5px); box-shadow:0 24px 60px rgba(0,0,0,.5); }
@@ -719,9 +709,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .sol-bot   { padding:16px 28px; display:flex; gap:7px; flex-wrap:wrap; background:rgba(0,0,0,.2); }
 .stag      { font-size:10px; border:1px solid var(--border2); border-radius:100px; padding:3px 10px; color:rgba(255,255,255,.35); font-family:'JetBrains Mono',monospace; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    CONTACT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .contact-layout { display:grid; grid-template-columns:1fr 1.5fr; gap:clamp(40px,5vw,80px); align-items:start; }
 .cinfo           { display:flex; flex-direction:column; gap:14px; margin-top:32px; }
 .cinfo-item      { background:rgba(255,255,255,.03); border:1px solid var(--border2); border-radius:var(--r); padding:18px; display:flex; gap:14px; align-items:flex-start; transition:border-color .3s; cursor:default; }
@@ -751,9 +741,9 @@ body:has(a:hover,button:hover) .cur-ring { width: 52px; height: 52px; border-col
 .fok      { display:none; padding:14px; margin-top:14px; background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.25); border-radius:10px; color:var(--mint); font-size:13px; font-weight:500; text-align:center; }
 .fok.show { display:block; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    FOOTER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 footer    { background:#040209; border-top:1px solid var(--border2); padding:clamp(48px,6vw,80px) clamp(24px,6vw,100px) clamp(24px,3vw,40px); position:relative; z-index:10; }
 .ft-grid  { display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:clamp(32px,4vw,56px); margin-bottom:clamp(32px,4vw,56px); }
 .ft-brand p { font-size:13px; color:rgba(255,255,255,.3); line-height:1.8; max-width:220px; }
@@ -766,9 +756,9 @@ footer    { background:#040209; border-top:1px solid var(--border2); padding:cla
 .ft-links a { font-size:12px; color:rgba(255,255,255,.2); text-decoration:none; cursor:pointer; transition:color .2s; font-family:'JetBrains Mono',monospace; }
 .ft-links a:hover { color: var(--coral); }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    CHAT FAB
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 .chat-fab { position:fixed; bottom:28px; right:28px; z-index:600; width:52px; height:52px; border-radius:50%; cursor:pointer; background:linear-gradient(135deg,var(--violet),var(--coral)); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 8px 32px rgba(109,74,232,.45); transition:transform .2s,box-shadow .2s; }
 .chat-fab:hover   { transform:scale(1.08); box-shadow:0 12px 48px rgba(109,74,232,.6); }
 .chat-fab .online { position:absolute; top:4px; right:4px; width:12px; height:12px; background:#10B981; border-radius:50%; border:2px solid var(--ink); animation:pulse 2s infinite; }
@@ -786,9 +776,9 @@ footer    { background:#040209; border-top:1px solid var(--border2); padding:cla
 .cw-inp:focus        { border-color:var(--violet); }
 .cw-send    { background:var(--violet); border:none; border-radius:100px; padding:10px 16px; color:white; font-size:13px; cursor:pointer; font-weight:700; font-family:'Cabinet Grotesk',sans-serif; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
    RESPONSIVE BREAKPOINTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â” */
 @media (max-width: 1024px) {
   .bento  { grid-template-columns: 1fr 1fr; }
   .bc1,.bc2,.bc3,.bc4,.bc5,.bc6,.bc7 { grid-column: span 1; }
@@ -824,9 +814,9 @@ footer    { background:#040209; border-top:1px solid var(--border2); padding:cla
   .hstat:nth-child(even) { border-right: none; }
 }
 
-.sec-dark .sec-title, .sec-purple .sec-title { color: #ffffff; }
+.sec-dark .sec-title, .sec-purple .sec-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: clamp(2.6rem,5vw,4rem); font-weight: 900; letter-spacing: -.04em; line-height: 1.0; color: #0D0720; margin-bottom: 20px; }
 .sec-dark .sec-sub, .sec-purple .sec-sub { color: rgba(255,255,255,0.55); }
-.sec-darker .sec-title { color: #0D0720; }
+.sec-darker .sec-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: clamp(2.6rem,5vw,4rem); font-weight: 900; letter-spacing: -.04em; line-height: 1.0; color: #0D0720; margin-bottom: 20px; }
 .sec-darker .sec-sub { color: #4A3F6B; }
 .sec-darker .wtitle { color: #0D0720; }
 .sec-darker .wsub { color: #4A3F6B; }
@@ -1214,3 +1204,38 @@ section { overflow-x: hidden !important; box-sizing: border-box !important; }
     overflow-wrap: break-word !important;
   }
 }
+
+
+
+/* BIGGER HEADINGS OVERRIDE */
+.eyebrow {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: .18em !important;
+  text-transform: uppercase !important;
+  color: #E8401A !important;
+  margin-bottom: 20px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+.eyebrow::before {
+  content: '' !important;
+  display: inline-block !important;
+  width: 28px !important;
+  height: 3px !important;
+  background: linear-gradient(90deg,#E8401A,#5B35D5) !important;
+  border-radius: 2px !important;
+}
+.sec-title {
+  font-family: 'Cabinet Grotesk', sans-serif !important;
+  font-size: clamp(2.6rem,5vw,4rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: -.04em !important;
+  line-height: 1.0 !important;
+  color: #0D0720 !important;
+  margin-bottom: 20px !important;
+}
+.sec-dark .sec-title { color: #ffffff !important; }
+.sec-purple .sec-title { color: #ffffff !important; }

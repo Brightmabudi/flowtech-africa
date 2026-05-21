@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Heart, Target, Flame, Star, CheckCircle, Users, Globe, Award, TrendingUp } from 'lucide-react'
@@ -114,7 +114,7 @@ export default function Purpose() {
               {/* Left - main message */}
               <div style={{ padding: 'clamp(36px,5vw,64px)', borderRight: '1px solid rgba(255,255,255,.06)' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: '#E8401A', marginBottom: 16, fontFamily: 'JetBrains Mono, monospace' }}>
-                  // Let Us Be Your Partners
+                  Let Us Be Your Partners
                 </span>
                 <h2 style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, letterSpacing: '-.035em', color: 'white', marginBottom: 20, lineHeight: 1.1 }}>
                   Let Us Be Your{' '}
@@ -172,7 +172,7 @@ export default function Purpose() {
           style={{ textAlign: 'center', marginBottom: 48 }}
         >
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: '#E8401A', marginBottom: 14, fontFamily: 'JetBrains Mono, monospace' }}>
-            // Our Foundation
+            Our Foundation
           </span>
           <h2 style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: 'clamp(2rem,3.5vw,3rem)', fontWeight: 900, letterSpacing: '-.035em', color: '#0D0720', marginBottom: 14 }}>
             Purpose, Mission, Passion{' '}

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useEffect, useState } from 'react'
 import { ArrowRight, ChevronRight, Shield, Zap, Cloud, Globe } from 'lucide-react'
 

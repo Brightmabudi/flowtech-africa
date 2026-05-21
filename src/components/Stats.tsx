@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Clock, Award, DollarSign, Monitor } from 'lucide-react'
