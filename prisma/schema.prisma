@@ -1,0 +1,124 @@
+// ─────────────────────────────────────────────────────────────────────────────
+//  Prisma Schema — FlowTech Africa
+//  Provider : SQLite  (file-based, dev/local)
+//  Purpose  : Automated client intake flow
+//
+//  Note: SQLite does not support native enums.
+//  Status/type fields use String with documented valid values.
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  ClientProfile
+//  Root entity — one profile per unique client.
+//  updatedAt acts as the update flag, auto-set by Prisma on every write.
+// ─────────────────────────────────────────────────────────────────────────────
+model ClientProfile {
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  name             String
+  organizationName String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  registrationRequests RegistrationRequest[]
+  documents            Document[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  RegistrationRequest
+//  Tracks each intake request linked to a ClientProfile.
+//  type    : "Company Registration" | "Tax Setup" | "Compliance Filing"
+//            | "Business Licensing" | "BBEE Certification"
+//  status  : "Pending" | "Under Review" | "Processed" | "Rejected"
+// ─────────────────────────────────────────────────────────────────────────────
+model RegistrationRequest {
+  id             Int      @id @default(autoincrement())
+  type           String
+  status         String   @default("Pending")
+  trackingNumber String   @unique
+  submittedAt    DateTime @default(now())
+
+  clientProfileId Int
+  clientProfile   ClientProfile @relation(fields: [clientProfileId], references: [id], onDelete: Cascade)
+
+  billingRecords BillingRecord[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  BillingRecord
+//  Financial record attached to a RegistrationRequest.
+//  amount stored as integer minor units (cents) for floating-point safety.
+//  currency      : ISO 4217 code, e.g. "ZAR", "USD", "KES"
+//  invoiceStatus : "Draft" | "Issued" | "Paid" | "Overdue" | "Cancelled"
+// ─────────────────────────────────────────────────────────────────────────────
+model BillingRecord {
+  id            Int      @id @default(autoincrement())
+  amount        Int
+  currency      String   @default("ZAR")
+  invoiceStatus String   @default("Draft")
+  issuedAt      DateTime @default(now())
+
+  registrationRequestId Int
+  registrationRequest   RegistrationRequest @relation(fields: [registrationRequestId], references: [id], onDelete: Cascade)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Account
+//  Authenticatable user — distinct from ClientProfile (external clients).
+//  role : "USER" | "ADMIN"
+// ─────────────────────────────────────────────────────────────────────────────
+model Account {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("USER")
+  createdAt    DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  JobVacancy
+//  Public job listings managed by administrators.
+//  requirements stored as newline-separated plain text.
+//  type     : "Full-time" | "Part-time" | "Contract" | "Internship"
+//  isActive : soft-delete / unpublish flag
+// ─────────────────────────────────────────────────────────────────────────────
+model JobVacancy {
+  id           Int      @id @default(autoincrement())
+  title        String
+  department   String
+  location     String
+  type         String   @default("Full-time")
+  description  String
+  requirements String
+  contactEmail String
+  isActive     Boolean   @default(true)
+  closingDate  DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Document
+//  Compliance documents assigned to a ClientProfile by admins.
+//  fileType : "CIPC Company Registration" | "SARS Tax Clearance"
+//           | "B-BBEE Affidavit" | "Compliance Filing"
+// ─────────────────────────────────────────────────────────────────────────────
+model Document {
+  id              Int           @id @default(autoincrement())
+  fileName        String
+  fileType        String
+  fileUrl         String
+  uploadedAt      DateTime      @default(now())
+
+  clientProfileId Int
+  clientProfile   ClientProfile @relation(fields: [clientProfileId], references: [id], onDelete: Cascade)
+}

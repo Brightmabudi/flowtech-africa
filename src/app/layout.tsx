@@ -1,10 +1,9 @@
 ﻿import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import './globals.css'
-import Navbar       from '@/components/Navbar'
-import TechCanvas   from '@/components/TechCanvas'
-import Loader       from '@/components/Loader'
-import CustomCursor from '@/components/CustomCursor'
+import '@frontend/styles/globals.css'
+import Navbar       from '@frontend/components/Navbar'
+import Loader       from '@frontend/components/Loader'
+import CustomCursor from '@frontend/components/CustomCursor'
 
 const geistSans = localFont({ src: './fonts/GeistVF.woff',     variable: '--font-geist-sans', weight: '100 900' })
 const geistMono = localFont({ src: './fonts/GeistMonoVF.woff', variable: '--font-geist-mono', weight: '100 900' })
@@ -21,7 +20,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={geistSans.variable + ' ' + geistMono.variable + ' font-sans antialiased'} style={{ overflowX: 'hidden', maxWidth: '100vw', position: 'relative' }}>
         <Loader />
         <CustomCursor />
-        <TechCanvas />
         <Navbar />
         {children}
       </body>

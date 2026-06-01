@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' -e ' *)",
+      "Bash(npx tsc *)",
+      "Bash(findstr /I \"prisma\\\\|dashboard\\\\|DashboardLayout\")",
+      "Bash(findstr /I \"DashboardLayout stats prisma\")",
+      "Bash(npx next *)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}
