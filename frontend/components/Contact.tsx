@@ -10,15 +10,28 @@ const INFO = [
   { icon: <Clock size={15} />, title: 'SUPPORT',       body: '24/7 NOC & Helpdesk\nRound-the-clock human support' },
 ]
 
-const inputStyle: React.CSSProperties = { padding: '12px 16px', border: '1px solid rgba(91,53,213,.15)', borderRadius: 10, fontSize: 14, fontFamily: 'Instrument Sans, sans-serif', color: '#0D0720', background: '#F8F5FF', outline: 'none', width: '100%', boxSizing: 'border-box' }
+const inputStyle: React.CSSProperties = { padding: '12px 16px', border: '1px solid rgba(91,53,213,.15)', borderRadius: 10, fontSize: 14, fontFamily: 'Instrument Sans, sans-serif', color: '#0D0720', background: '#F8F5FF', outline: 'none', width: '100%', boxSizing: 'border-box', transition: 'border-color .2s, box-shadow .2s' }
 const labelStyle: React.CSSProperties = { fontSize: 10, fontWeight: 700, color: 'rgba(13,7,32,.4)', letterSpacing: '.12em', textTransform: 'uppercase', fontFamily: 'JetBrains Mono, monospace' }
 const fieldStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 16 }
+
+function focusInput(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  e.currentTarget.style.borderColor = '#5B35D5'
+  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(91,53,213,.15)'
+}
+function blurInput(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  e.currentTarget.style.borderColor = 'rgba(91,53,213,.15)'
+  e.currentTarget.style.boxShadow = 'none'
+}
+
+const Req = () => <span aria-hidden="true" style={{ color: '#E8401A', marginLeft: 2 }}>*</span>
 
 export default function Contact() {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', companySize: '1 - 50 employees', service: 'Cloud Infrastructure', message: '' })
   const [sent, setSent]       = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState('')
+  const [website, setWebsite] = useState('') // honeypot: hidden from real visitors, bots tend to fill it in
+  const [renderedAt]          = useState(() => Date.now())
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -28,11 +41,11 @@ export default function Contact() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, website, renderedAt }),
       })
       const data = await res.json()
       if (data.success) setSent(true)
-      else setError('Failed to send. Please email us directly at michellef@flowtech.africa')
+      else setError(data.error || 'Failed to send. Please email us directly at michellef@flowtech.africa')
     } catch {
       setError('Failed to send. Please email us directly at michellef@flowtech.africa')
     } finally {
@@ -119,31 +132,50 @@ export default function Contact() {
                   <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
                   <div style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: '1.2rem', fontWeight: 800, color: '#0D0720', marginBottom: 8 }}>Message Sent!</div>
                   <p style={{ fontSize: 14, color: '#4A3F6B', lineHeight: 1.7 }}>A FlowTech consultant will contact you within one business day.</p>
+                  <button
+                    onClick={() => { setSent(false); setForm({ firstName: '', lastName: '', email: '', phone: '', companySize: '1 - 50 employees', service: 'Cloud Infrastructure', message: '' }) }}
+                    style={{ marginTop: 20, padding: '10px 24px', background: 'none', border: '1px solid rgba(91,53,213,.3)', borderRadius: 8, color: '#5B35D5', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+                  >
+                    Send another message
+                  </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
+                  <input
+                    type="text"
+                    name="website"
+                    value={website}
+                    onChange={e => setWebsite(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
+                  />
+                  <p style={{ fontSize: 11, color: 'rgba(13,7,32,.4)', marginBottom: 12, fontFamily: 'JetBrains Mono, monospace' }}>
+                    Fields marked <span style={{ color: '#E8401A' }}>*</span> are required
+                  </p>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                     <div style={fieldStyle}>
-                      <label style={labelStyle}>First Name</label>
-                      <input type="text" placeholder="Sipho" required value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} style={inputStyle} />
+                      <label style={labelStyle}>First Name<Req /></label>
+                      <input type="text" placeholder="Sipho" required autoComplete="given-name" value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} style={inputStyle} onFocus={focusInput} onBlur={blurInput} />
                     </div>
                     <div style={fieldStyle}>
-                      <label style={labelStyle}>Last Name</label>
-                      <input type="text" placeholder="Nkosi" required value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} style={inputStyle} />
+                      <label style={labelStyle}>Last Name<Req /></label>
+                      <input type="text" placeholder="Nkosi" required autoComplete="family-name" value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} style={inputStyle} onFocus={focusInput} onBlur={blurInput} />
                     </div>
                   </div>
                   <div style={fieldStyle}>
-                    <label style={labelStyle}>Work Email</label>
-                    <input type="email" placeholder="sipho@company.co.za" required value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={inputStyle} />
+                    <label style={labelStyle}>Work Email<Req /></label>
+                    <input type="email" placeholder="sipho@company.co.za" required autoComplete="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={inputStyle} onFocus={focusInput} onBlur={blurInput} />
                   </div>
                   <div style={fieldStyle}>
-                    <label style={labelStyle}>Cell Phone Number</label>
-                    <input type="tel" placeholder="+27 xx xxx xxxx" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={inputStyle} />
+                    <label style={labelStyle}>Cell Phone Number <span style={{ color: 'rgba(13,7,32,.35)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
+                    <input type="tel" placeholder="+27 xx xxx xxxx" autoComplete="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={inputStyle} onFocus={focusInput} onBlur={blurInput} />
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                     <div style={fieldStyle}>
-                      <label style={labelStyle}>Company Size</label>
-                      <select value={form.companySize} onChange={e => setForm({ ...form, companySize: e.target.value })} style={{ ...inputStyle, color: '#4A3F6B' }}>
+                      <label style={labelStyle}>Company Size<Req /></label>
+                      <select value={form.companySize} onChange={e => setForm({ ...form, companySize: e.target.value })} style={{ ...inputStyle, color: '#4A3F6B' }} onFocus={focusInput} onBlur={blurInput}>
                         <option>1 - 50 employees</option>
                         <option>51 - 200 employees</option>
                         <option>201 - 1000 employees</option>
@@ -151,8 +183,8 @@ export default function Contact() {
                       </select>
                     </div>
                     <div style={fieldStyle}>
-                      <label style={labelStyle}>Service Interest</label>
-                      <select value={form.service} onChange={e => setForm({ ...form, service: e.target.value })} style={{ ...inputStyle, color: '#4A3F6B' }}>
+                      <label style={labelStyle}>Service Interest<Req /></label>
+                      <select value={form.service} onChange={e => setForm({ ...form, service: e.target.value })} style={{ ...inputStyle, color: '#4A3F6B' }} onFocus={focusInput} onBlur={blurInput}>
                         <option>Cloud Infrastructure</option>
                         <option>Cybersecurity / SOC</option>
                         <option>Managed IT Services</option>
@@ -167,8 +199,8 @@ export default function Contact() {
                     </div>
                   </div>
                   <div style={fieldStyle}>
-                    <label style={labelStyle}>Message</label>
-                    <textarea placeholder="Tell us about your challenge or project..." required value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} style={{ ...inputStyle, resize: 'vertical', minHeight: 120 }} />
+                    <label style={labelStyle}>Message<Req /></label>
+                    <textarea placeholder="Tell us about your challenge or project..." required value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} style={{ ...inputStyle, resize: 'vertical', minHeight: 120 }} onFocus={focusInput} onBlur={blurInput} />
                   </div>
                   {error && (
                     <div style={{ padding: 14, marginBottom: 14, background: 'rgba(232,64,26,.08)', border: '1px solid rgba(232,64,26,.2)', borderRadius: 10, color: '#E8401A', fontSize: 13 }}>
