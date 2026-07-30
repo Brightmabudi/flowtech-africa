@@ -1,11 +1,19 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function CustomCursor() {
   const dotRef  = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
+  const [enabled, setEnabled] = useState(false)
 
   useEffect(() => {
+    const coarsePointer = window.matchMedia('(pointer: coarse)').matches
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    setEnabled(!coarsePointer && !reducedMotion)
+  }, [])
+
+  useEffect(() => {
+    if (!enabled) return
     const dot  = dotRef.current
     const ring = ringRef.current
     if (!dot || !ring) return
@@ -29,14 +37,16 @@ export default function CustomCursor() {
 
     window.addEventListener('mousemove', smooth)
     return () => { window.removeEventListener('mousemove', smooth); cancelAnimationFrame(raf) }
-  }, [])
+  }, [enabled])
+
+  if (!enabled) return null
 
   return (
     <>
-      <div ref={dotRef}  className="cur" style={{ position: 'fixed', pointerEvents: 'none', zIndex: 8000, mixBlendMode: 'difference' }}>
+      <div ref={dotRef}  aria-hidden="true" className="cur" style={{ position: 'fixed', pointerEvents: 'none', zIndex: 8000, mixBlendMode: 'difference' }}>
         <div className="cur-dot" />
       </div>
-      <div ref={ringRef} className="cur" style={{ position: 'fixed', pointerEvents: 'none', zIndex: 7999, mixBlendMode: 'difference' }}>
+      <div ref={ringRef} aria-hidden="true" className="cur" style={{ position: 'fixed', pointerEvents: 'none', zIndex: 7999, mixBlendMode: 'difference' }}>
         <div className="cur-ring" />
       </div>
     </>

@@ -1,5 +1,7 @@
 'use client'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { Pause, Play } from 'lucide-react'
 
 const PARTNERS = [
   'Microsoft', 'Amazon Web Services', 'Cisco', 'Dell Technologies',
@@ -9,28 +11,63 @@ const PARTNERS = [
 
 export default function Partners() {
   const doubled = [...PARTNERS, ...PARTNERS]
+  const [animate, setAnimate]     = useState(true)
+  const [userPaused, setUserPaused] = useState(false)
+
+  useEffect(() => {
+    setAnimate(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  }, [])
+
+  const playing = animate && !userPaused
 
   return (
-    <section id="partners" style={{ padding: '64px 0', borderTop: '1px solid rgba(59,31,168,.08)', borderBottom: '1px solid rgba(59,31,168,.08)', background: '#ffffff' }}>
+    <section
+      id="partners"
+      role="region"
+      aria-label="Technology partners"
+      className="border-y border-brand-600/10 bg-white py-16"
+    >
       <motion.div
-        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-        viewport={{ once: true }} transition={{ duration: 0.6 }}
-        style={{ textAlign: 'center', marginBottom: 36, padding: '0 24px' }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="mb-9 px-6 text-center"
       >
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--coral)', marginBottom: 8, fontFamily: 'JetBrains Mono, monospace' }}>
+        <span className="mb-2 inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-accent-600">
           {'// Technology Partners'}
         </span>
-        <p style={{ fontSize: 13, color: '#6B5F8A', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '.04em' }}>
+        <p className="font-mono text-[13px] tracking-wide text-ink-400">
           Powered by the world&apos;s leading technology vendors
         </p>
+        {animate && (
+          <button
+            type="button"
+            onClick={() => setUserPaused(v => !v)}
+            aria-label={playing ? 'Pause partner logo scroll' : 'Resume partner logo scroll'}
+            className="mx-auto mt-3 flex items-center justify-center rounded-full border border-brand-600/20 p-1.5 text-ink-400 transition-colors hover:text-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+          >
+            {playing ? <Pause size={12} aria-hidden="true" /> : <Play size={12} aria-hidden="true" />}
+          </button>
+        )}
       </motion.div>
 
-      <div style={{ overflow: 'hidden', padding: '20px 0' }}>
-        <div style={{ display: 'flex', animation: 'tick 22s linear infinite' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 56, padding: '0 28px', flexShrink: 0 }}>
-            {doubled.map((name, i) => (
-              <div key={i} style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: '1rem', fontWeight: 700, color: 'rgba(13,7,32,.25)', letterSpacing: '-.01em', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 4, height: 4, background: 'var(--violet)', borderRadius: '50%', flexShrink: 0 }} />
+      <div className="group overflow-hidden py-5">
+        <div
+          className={playing ? 'flex [animation:tick_22s_linear_infinite] group-hover:[animation-play-state:paused]' : 'flex'}
+        >
+          <div className="flex flex-shrink-0 items-center gap-14 px-7">
+            {PARTNERS.map((name, i) => (
+              <div key={i} className="flex items-center gap-2.5 whitespace-nowrap font-display text-base font-bold text-ink-950/68">
+                <span aria-hidden="true" className="h-1 w-1 flex-shrink-0 rounded-full bg-brand-600" />
+                {name}
+              </div>
+            ))}
+          </div>
+          <div aria-hidden="true" className="flex flex-shrink-0 items-center gap-14 px-7">
+            {doubled.slice(PARTNERS.length).map((name, i) => (
+              <div key={i} className="flex items-center gap-2.5 whitespace-nowrap font-display text-base font-bold text-ink-950/68">
+                <span className="h-1 w-1 flex-shrink-0 rounded-full bg-brand-600" />
                 {name}
               </div>
             ))}

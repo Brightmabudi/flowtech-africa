@@ -9,43 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "Inter", ...defaultTheme.fontFamily.sans],
-        mono: ["var(--font-geist-mono)", ...defaultTheme.fontFamily.mono],
+        sans:    ["var(--font-instrument-sans)", ...defaultTheme.fontFamily.sans],
+        display: ["var(--font-cabinet-grotesk)", ...defaultTheme.fontFamily.sans],
+        mono:    ["var(--font-jetbrains-mono)", ...defaultTheme.fontFamily.mono],
       },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
 
-        // FlowTech Navy — primary brand color (#0A192F base at 900)
-        navy: {
-          50:  "#EDF1F7",
-          100: "#D2DCE9",
-          200: "#A8BDD3",
-          300: "#7D9EBD",
-          400: "#527FA7",
-          500: "#346291",
-          600: "#264B75",
-          700: "#1A3459",
-          800: "#0F1E3C",
-          900: "#0A192F",
-          950: "#060F1C",
-        },
-
-        // Vaal Electric Blue — accent color (#00D2FF base at 500)
-        electric: {
-          50:  "#E0FAFF",
-          100: "#B3F3FF",
-          200: "#80EBFF",
-          300: "#4DE3FF",
-          400: "#1ADAFF",
-          500: "#00D2FF",
-          600: "#00A8CC",
-          700: "#007E99",
-          800: "#005466",
-          900: "#002A33",
-        },
-
-        // Slate Gray — neutral / secondary text
+        // Slate Gray — neutral / secondary text (kept for existing /dashboard usage)
         slate: {
           50:  "#F8FAFC",
           100: "#F1F5F9",
@@ -59,9 +31,55 @@ const config: Config = {
           900: "#0F172A",
         },
 
-        // Semantic shortcuts
-        primary: "#0A192F",
-        accent:  "#00D2FF",
+        // Brand purple — #5B35D5 base at 600
+        brand: {
+          50:  "#F5F2FE",
+          100: "#EBE3FD",
+          200: "#D6C9FB",
+          300: "#B79CF6",
+          400: "#9470EE",
+          500: "#7550E3",
+          600: "#5B35D5",
+          700: "#4A2AB0",
+          800: "#2D1580",
+          900: "#1F0F5C",
+          950: "#120836",
+        },
+
+        // Accent orange — #E8401A base at 500
+        accent: {
+          50:  "#FFF3EF",
+          100: "#FFE1D6",
+          200: "#FFC0AC",
+          300: "#FF9776",
+          400: "#F3672F",
+          500: "#E8401A",
+          600: "#C7330F",
+          700: "#A3280C",
+          800: "#7E1F09",
+          900: "#5C1607",
+          950: "#3A0D04",
+        },
+
+        // Ink — text/background neutrals lifted from the marketing site's existing hex usage
+        ink: {
+          50:  "#F8F5FF",
+          100: "#F0EDF8",
+          400: "#6B5F8A",
+          500: "#4A3F6B",
+          700: "#2D1A4A",
+          950: "#0D0720",
+        },
+      },
+      borderRadius: {
+        control: "12px",
+        card:    "20px",
+        panel:   "28px",
+      },
+      boxShadow: {
+        'brand-sm': "0 2px 16px rgba(91,53,213,0.06)",
+        'brand-md': "0 8px 32px rgba(91,53,213,0.12)",
+        'brand-lg': "0 20px 48px rgba(91,53,213,0.14)",
       },
     },
   },

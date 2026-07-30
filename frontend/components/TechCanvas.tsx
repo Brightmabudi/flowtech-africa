@@ -25,11 +25,12 @@ interface Pulse {
   i: number; j: number; t: number; speed: number; color: string
 }
 
-const NODE_COLORS = ['#5B35D5', '#6D4AE8', '#E8401A', '#0EA5E9', '#7C5CFC', '#3B1FA8', '#F5C842']
+const NODE_COLORS = ['#5B35D5', '#6D4AE8', '#E8401A', '#0EA5E9', '#7C5CFC', '#B754D9', '#F5C842']
 const MAX_DIST    = 170
-const NODE_COUNT  = 75
+const NODE_COUNT  = 60
 
 export default function TechCanvas() {
+  const wrapRef   = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [labels, setLabels] = useState<FloatingLabel[]>([])
 
@@ -49,18 +50,30 @@ export default function TechCanvas() {
 
   // ── Canvas network animation ────────────────────────────────────────────────
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const wrap   = wrapRef.current
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!wrap || !canvas) return
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
     if (!ctx) return
 
     let animId: number
-    let W = window.innerWidth
-    let H = window.innerHeight
-    canvas.width  = W
-    canvas.height = H
+    let W = wrap.clientWidth
+    let H = wrap.clientHeight
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
 
-    // Spawn nodes
+    function sizeCanvas() {
+      W = wrap!.clientWidth
+      H = wrap!.clientHeight
+      canvas!.width  = W * dpr
+      canvas!.height = H * dpr
+      canvas!.style.width  = `${W}px`
+      canvas!.style.height = `${H}px`
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    }
+    sizeCanvas()
+
     const nodes: Particle[] = Array.from({ length: NODE_COUNT }, () => ({
       x:     Math.random() * W,
       y:     Math.random() * H,
@@ -71,8 +84,7 @@ export default function TechCanvas() {
       phase: Math.random() * Math.PI * 2,
     }))
 
-    // Spawn a handful of larger "hub" nodes
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 6; i++) {
       nodes.push({
         x:     Math.random() * W,
         y:     Math.random() * H,
@@ -93,7 +105,6 @@ export default function TechCanvas() {
       ctx.clearRect(0, 0, W, H)
       frame++
 
-      // ── Spawn data pulses every ~40 frames ───────────────────────────────
       if (frame % 40 === 0 && pulses.length < 25) {
         const i = Math.floor(Math.random() * nodes.length)
         for (let j = 0; j < nodes.length; j++) {
@@ -101,17 +112,12 @@ export default function TechCanvas() {
           const dx = nodes[i].x - nodes[j].x
           const dy = nodes[i].y - nodes[j].y
           if (Math.sqrt(dx * dx + dy * dy) < MAX_DIST) {
-            pulses.push({
-              i, j, t: 0,
-              speed: 0.01 + Math.random() * 0.014,
-              color: nodes[i].color,
-            })
+            pulses.push({ i, j, t: 0, speed: 0.01 + Math.random() * 0.014, color: nodes[i].color })
             break
           }
         }
       }
 
-      // ── Draw edges ────────────────────────────────────────────────────────
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx   = nodes[i].x - nodes[j].x
@@ -129,7 +135,6 @@ export default function TechCanvas() {
         }
       }
 
-      // ── Animate data pulses ───────────────────────────────────────────────
       for (let k = pulses.length - 1; k >= 0; k--) {
         const p = pulses[k]
         p.t += p.speed
@@ -138,7 +143,6 @@ export default function TechCanvas() {
         const px = nodes[p.i].x + (nodes[p.j].x - nodes[p.i].x) * p.t
         const py = nodes[p.i].y + (nodes[p.j].y - nodes[p.i].y) * p.t
 
-        // Glow halo
         const g = ctx.createRadialGradient(px, py, 0, px, py, 12)
         g.addColorStop(0, p.color + '99')
         g.addColorStop(1, p.color + '00')
@@ -147,14 +151,12 @@ export default function TechCanvas() {
         ctx.fillStyle = g
         ctx.fill()
 
-        // Bright core
         ctx.beginPath()
         ctx.arc(px, py, 2.8, 0, Math.PI * 2)
         ctx.fillStyle = p.color + 'ee'
         ctx.fill()
       }
 
-      // ── Update + draw nodes ───────────────────────────────────────────────
       for (const n of nodes) {
         n.x += n.vx
         n.y += n.vy
@@ -166,7 +168,6 @@ export default function TechCanvas() {
 
         const glow = 0.45 + 0.35 * Math.sin(n.phase)
 
-        // Outer glow
         const rg = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 6)
         rg.addColorStop(0, n.color + hex(Math.round(glow * 55)))
         rg.addColorStop(1, n.color + '00')
@@ -175,7 +176,6 @@ export default function TechCanvas() {
         ctx.fillStyle = rg
         ctx.fill()
 
-        // Core dot
         ctx.beginPath()
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2)
         ctx.fillStyle = n.color + hex(Math.round(glow * 220))
@@ -187,14 +187,7 @@ export default function TechCanvas() {
 
     draw()
 
-    function onResize() {
-      W = window.innerWidth
-      H = window.innerHeight
-      if (canvasRef.current) {
-        canvasRef.current.width  = W
-        canvasRef.current.height = H
-      }
-    }
+    function onResize() { sizeCanvas() }
     window.addEventListener('resize', onResize)
 
     return () => {
@@ -204,14 +197,8 @@ export default function TechCanvas() {
   }, [])
 
   return (
-    <div id="tech-canvas" aria-hidden="true">
-      {/* Network graph canvas */}
-      <canvas
-        ref={canvasRef}
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
-      />
-
-      {/* Floating tech text labels (CSS animated) */}
+    <div ref={wrapRef} aria-hidden="true" className="pointer-events-none absolute inset-0 hidden overflow-hidden md:block">
+      <canvas ref={canvasRef} className="absolute inset-0 block" />
       {labels.map(({ id, symbol, left, duration, delay, size }) => (
         <span
           key={id}

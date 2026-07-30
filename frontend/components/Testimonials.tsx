@@ -1,7 +1,9 @@
-﻿'use client'
+'use client'
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Quote, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Container, Section } from '@frontend/components/ui/Container'
+import SectionHeader from '@frontend/components/ui/SectionHeader'
 
 const TESTIMONIALS = [
   { quote: 'FlowTech migrated our entire on-premise stack to a hybrid cloud in 28 days with zero production downtime. Their engineers understood our mining operational constraints better than any other vendor we had engaged.', name: 'Sipho Nkosi', role: 'CTO, Kumba Mining Group', initials: 'SN', rating: 5, tag: 'Cloud Migration', color: '#5B35D5', metric: { num: '28 days', label: 'Migration Time' } },
@@ -10,168 +12,144 @@ const TESTIMONIALS = [
 ]
 
 export default function Testimonials() {
-  const [active, setActive]             = useState(0)
-  const [paused, setPaused]             = useState(false)
-  const [direction, setDirection]       = useState(1)
-  const [inView, setInView]             = useState(false)
-  const [visibleCount, setVisibleCount] = useState(0)
-  const [allVisible, setAllVisible]     = useState(false)
-  const sectionRef = useRef<HTMLElement>(null)
-  const timersRef  = useRef<ReturnType<typeof setTimeout>[]>([])
+  const reducedMotion = useReducedMotion()
+  const [active, setActive]       = useState(0)
+  const [paused, setPaused]       = useState(false)
+  const [direction, setDirection] = useState(1)
+  const sectionRef = useRef<HTMLDivElement>(null)
   const total = TESTIMONIALS.length
 
-  function startReveal() {
-    setVisibleCount(0)
-    setAllVisible(false)
-    setActive(0)
-    timersRef.current.forEach(clearTimeout)
-    timersRef.current = []
-    TESTIMONIALS.forEach((_, i) => {
-      const t = setTimeout(() => {
-        setActive(i)
-        setVisibleCount(i + 1)
-        if (i === total - 1) {
-          const t2 = setTimeout(() => setAllVisible(true), 800)
-          timersRef.current.push(t2)
-        }
-      }, i * 2000)
-      timersRef.current.push(t)
-    })
-  }
-
-  function resetReveal() {
-    timersRef.current.forEach(clearTimeout)
-    timersRef.current = []
-    setVisibleCount(0)
-    setAllVisible(false)
-    setActive(0)
-  }
-
   useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) { setInView(true); startReveal(); }
-        else { setInView(false); resetReveal(); }
-      },
-      { threshold: 0.1 }
-    )
-    if (sectionRef.current) obs.observe(sectionRef.current)
-    return () => { obs.disconnect(); timersRef.current.forEach(clearTimeout) }
-  }, [])
-
-  useEffect(() => {
-    if (!allVisible || paused) return
+    if (paused || reducedMotion) return
     const t = setInterval(() => { setDirection(1); setActive(p => (p + 1) % total) }, 5000)
     return () => clearInterval(t)
-  }, [allVisible, paused, total])
+  }, [paused, reducedMotion, total])
 
   function goTo(idx: number) {
-    if (!allVisible) return
     setDirection(idx > active ? 1 : -1)
     setActive(idx)
-    setPaused(true)
-    setTimeout(() => setPaused(false), 8000)
   }
 
   const t = TESTIMONIALS[active]
 
   return (
-    <section ref={sectionRef} style={{ background: '#F0EDF8', padding: 'clamp(64px,8vw,112px) clamp(24px,6vw,100px)' }}>
-      <div className="max-w-4xl mx-auto">
+    <Section bg="tint">
+      <Container className="max-w-4xl">
 
-        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ duration: 0.55 }} style={{ textAlign: 'center', marginBottom: 56 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: '#E8401A', marginBottom: 14, fontFamily: 'JetBrains Mono, monospace' }}>
-            Client Stories
+        <SectionHeader
+          align="center"
+          eyebrow="Client Stories"
+          title="Trusted by Africa Leaders"
+          subtitle="Real outcomes from real enterprises across the continent."
+          className="mx-auto"
+        />
+
+        <div
+          ref={sectionRef}
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Client testimonials"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocus={() => setPaused(true)}
+          onBlur={() => setPaused(false)}
+        >
+          <span className="sr-only" aria-live="polite">
+            {`Showing testimonial ${active + 1} of ${total}: ${t.name}, ${t.role}`}
           </span>
-          <h2 style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: 'clamp(2rem,3.5vw,3rem)', fontWeight: 900, letterSpacing: '-.035em', color: '#0D0720', marginBottom: 14 }}>
-            Trusted by Africa Leaders
-          </h2>
-          <p style={{ fontSize: '1rem', color: '#4A3F6B', maxWidth: 460, margin: '0 auto', lineHeight: 1.8 }}>
-            Real outcomes from real enterprises across the continent.
-          </p>
-        </motion.div>
 
-        {inView && !allVisible && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: 'center', marginBottom: 24 }}>
-            <span style={{ fontSize: 11, color: '#6B5F8A', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '.1em' }}>
-              Showing story {visibleCount} of {total}...
-            </span>
-          </motion.div>
-        )}
-
-        {inView && !allVisible && visibleCount > 0 && (
-          <div style={{ marginBottom: 32, display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ flex: 1, height: 3, background: 'rgba(91,53,213,0.1)', borderRadius: 100, overflow: 'hidden' }}>
-              <motion.div animate={{ width: (visibleCount / total * 100) + '%' }} transition={{ duration: 0.4 }} style={{ height: '100%', background: 'linear-gradient(90deg,#5B35D5,#E8401A)', borderRadius: 100 }} />
-            </div>
-          </div>
-        )}
-
-        <div style={{ position: 'relative', minHeight: 360 }}>
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={active}
-              custom={direction}
-              initial={{ opacity: 0, x: allVisible ? direction * 80 : 0, y: allVisible ? 0 : 32, scale: allVisible ? 1 : 0.96 }}
-              animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-              exit={{ opacity: 0, x: allVisible ? direction * -80 : 0 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              style={{ background: '#ffffff', border: '1px solid rgba(91,53,213,0.1)', borderRadius: 24, padding: 'clamp(28px,4vw,48px)', boxShadow: '0 8px 40px rgba(91,53,213,0.1)', position: 'relative', overflow: 'hidden' }}
-            >
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(90deg,' + t.color + ',transparent)', borderRadius: '24px 24px 0 0' }} />
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: t.color, fontFamily: 'JetBrains Mono, monospace', background: t.color + '15', padding: '5px 14px', borderRadius: 100, border: '1px solid ' + t.color + '30' }}>{t.tag}</span>
-                <Quote size={28} style={{ color: t.color, opacity: 0.25 }} />
-              </div>
-              <div style={{ display: 'flex', gap: 4, marginBottom: 20 }}>
-                {Array(t.rating).fill(0).map((_, i) => (<span key={i} style={{ color: '#F5C842', fontSize: 18 }}>★</span>))}
-              </div>
-              <p style={{ fontSize: 'clamp(1rem,1.8vw,1.15rem)', color: '#1A0A38', lineHeight: 1.85, fontStyle: 'italic', marginBottom: 32 }}>{t.quote}</p>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, paddingTop: 24, borderTop: '1px solid rgba(91,53,213,0.1)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(135deg,' + t.color + ',#E8401A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Cabinet Grotesk, sans-serif', fontWeight: 900, fontSize: 15, color: 'white', flexShrink: 0 }}>{t.initials}</div>
-                  <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: '#0D0720', fontFamily: 'Cabinet Grotesk, sans-serif' }}>{t.name}</div>
-                    <div style={{ fontSize: 12, color: '#6B5F8A', marginTop: 2 }}>{t.role}</div>
+          <div className="relative min-h-[360px]">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={active}
+                custom={direction}
+                initial={{ opacity: 0, x: reducedMotion ? 0 : direction * 80 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: reducedMotion ? 0 : direction * -80 }}
+                transition={{ duration: reducedMotion ? 0.15 : 0.45, ease: [0.22, 1, 0.36, 1] }}
+                className="relative overflow-hidden rounded-[24px] border border-brand-600/10 bg-white p-7 shadow-brand-md sm:p-12"
+              >
+                <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1 rounded-t-[24px]" style={{ background: `linear-gradient(90deg,${t.color},transparent)` }} />
+                <div className="mb-6 flex items-center justify-between">
+                  <span
+                    className="rounded-full px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wide"
+                    style={{ color: t.color, background: `${t.color}15`, border: `1px solid ${t.color}30` }}
+                  >
+                    {t.tag}
+                  </span>
+                  <Quote size={28} style={{ color: t.color }} className="opacity-25" aria-hidden="true" />
+                </div>
+                <div className="mb-5 flex gap-1" role="img" aria-label={`${t.rating} out of 5 stars`}>
+                  {Array(t.rating).fill(0).map((_, i) => (
+                    <span key={i} aria-hidden="true" className="text-lg text-[#F5C842]">★</span>
+                  ))}
+                </div>
+                <p className="mb-8 text-[clamp(1rem,1.8vw,1.15rem)] italic leading-relaxed text-ink-950">{t.quote}</p>
+                <div className="flex flex-wrap items-center justify-between gap-4 border-t border-brand-600/10 pt-6">
+                  <div className="flex items-center gap-3.5">
+                    <div
+                      className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full font-display text-sm font-bold text-white"
+                      style={{ background: `linear-gradient(135deg,${t.color},#E8401A)` }}
+                      aria-hidden="true"
+                    >
+                      {t.initials}
+                    </div>
+                    <div>
+                      <div className="font-display text-[15px] font-bold text-ink-950">{t.name}</div>
+                      <div className="mt-0.5 text-xs text-ink-400">{t.role}</div>
+                    </div>
+                  </div>
+                  <div className="rounded-control px-6 py-3 text-center" style={{ background: `${t.color}08`, border: `1px solid ${t.color}20` }}>
+                    <div className="font-display text-2xl font-bold leading-none" style={{ color: t.color }}>{t.metric.num}</div>
+                    <div className="mt-1 text-[11px] text-ink-400">{t.metric.label}</div>
                   </div>
                 </div>
-                <div style={{ textAlign: 'center', padding: '12px 24px', background: t.color + '08', border: '1px solid ' + t.color + '20', borderRadius: 14 }}>
-                  <div style={{ fontFamily: 'Cabinet Grotesk, sans-serif', fontSize: '1.6rem', fontWeight: 900, color: t.color, lineHeight: 1 }}>{t.metric.num}</div>
-                  <div style={{ fontSize: 11, color: '#6B5F8A', marginTop: 4 }}>{t.metric.label}</div>
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-        {allVisible && (
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 20, marginTop: 36 }}>
-            <button onClick={() => goTo((active - 1 + total) % total)} style={{ width: 44, height: 44, borderRadius: '50%', background: '#ffffff', border: '1px solid rgba(91,53,213,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#2D1580', boxShadow: '0 2px 12px rgba(91,53,213,.08)', transition: 'all .2s' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#5B35D5'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#ffffff'; (e.currentTarget as HTMLElement).style.color = '#2D1580'; }}>
-              <ChevronLeft size={18} />
+          <div className="mt-9 flex items-center justify-center gap-5">
+            <button
+              onClick={() => goTo((active - 1 + total) % total)}
+              aria-label="Previous testimonial"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-600/15 bg-white text-brand-800 shadow-brand-sm transition-colors hover:bg-brand-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+            >
+              <ChevronLeft size={18} aria-hidden="true" />
             </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              {TESTIMONIALS.map((_, i) => (
-                <button key={i} onClick={() => goTo(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                  <div style={{ width: i === active ? 32 : 8, height: 8, borderRadius: 100, background: i === active ? '#5B35D5' : 'rgba(91,53,213,0.2)', transition: 'all .4s cubic-bezier(.22,1,.36,1)', overflow: 'hidden', position: 'relative' }}>
-                    {i === active && !paused && (
-                      <motion.div initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 5, ease: 'linear' }} style={{ position: 'absolute', top: 0, left: 0, height: '100%', background: 'rgba(255,255,255,0.5)', borderRadius: 100 }} />
+            <div className="flex items-center gap-2.5">
+              {TESTIMONIALS.map((item, i) => (
+                <button
+                  key={item.name}
+                  onClick={() => goTo(i)}
+                  aria-label={`Go to testimonial ${i + 1} of ${total}: ${item.name}`}
+                  aria-current={i === active}
+                  className="flex h-6 w-6 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+                >
+                  <div className={`relative h-2 overflow-hidden rounded-full transition-all duration-400 ${i === active ? 'w-8 bg-brand-600' : 'w-2 bg-brand-600/20'}`}>
+                    {i === active && !paused && !reducedMotion && (
+                      <motion.div
+                        key={active}
+                        initial={{ width: '0%' }}
+                        animate={{ width: '100%' }}
+                        transition={{ duration: 5, ease: 'linear' }}
+                        className="absolute inset-y-0 left-0 rounded-full bg-white/50"
+                      />
                     )}
                   </div>
                 </button>
               ))}
             </div>
-            <button onClick={() => goTo((active + 1) % total)} style={{ width: 44, height: 44, borderRadius: '50%', background: '#ffffff', border: '1px solid rgba(91,53,213,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#2D1580', boxShadow: '0 2px 12px rgba(91,53,213,.08)', transition: 'all .2s' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#5B35D5'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#ffffff'; (e.currentTarget as HTMLElement).style.color = '#2D1580'; }}>
-              <ChevronRight size={18} />
+            <button
+              onClick={() => goTo((active + 1) % total)}
+              aria-label="Next testimonial"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-600/15 bg-white text-brand-800 shadow-brand-sm transition-colors hover:bg-brand-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+            >
+              <ChevronRight size={18} aria-hidden="true" />
             </button>
-          </motion.div>
-        )}
+          </div>
+        </div>
 
-
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
