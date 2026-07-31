@@ -40,8 +40,6 @@ export default function Navbar() {
 
   useEffect(() => { setMobileOpen(false) }, [pathname])
 
-  if (pathname === '/login') return null
-
   return (
     <div className={cn(
       'fixed inset-x-0 top-0 z-[500] border-b border-brand-600/10 bg-white/75 backdrop-blur-xl transition-shadow duration-300',

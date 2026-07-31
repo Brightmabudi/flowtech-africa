@@ -220,7 +220,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex-1" />
 
           {/* Header actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <button
               className="relative p-2 rounded-lg hover:bg-[#F9FAFB] text-[#475569] hover:text-[#0F172A] transition-colors"
               aria-label="Notifications"
@@ -230,9 +230,30 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#FF5C3A]" />
             </button>
 
-            {/* Avatar */}
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#3B1FA8] to-[#FF5C3A] flex items-center justify-center cursor-pointer">
-              <span className="text-white text-[10px] font-black">FT</span>
+            <button
+              className="p-2 rounded-lg hover:bg-[#F9FAFB] text-[#475569] hover:text-[#0F172A] transition-colors"
+              aria-label="Settings"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="p-2 rounded-lg hover:bg-[rgba(255,92,58,0.08)] text-[#475569] hover:text-[#FF5C3A] transition-colors disabled:opacity-50"
+              aria-label="Sign out"
+            >
+              {loggingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" />}
+            </button>
+
+            <div className="w-px h-6 bg-[rgba(15,23,42,0.08)] mx-1 hidden sm:block" />
+
+            {/* Admin name + avatar */}
+            <div className="flex items-center gap-2 pl-0.5">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#3B1FA8] to-[#FF5C3A] flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-[10px] font-black">FT</span>
+              </div>
+              <span className="text-[13px] font-semibold text-[#0F172A] hidden sm:inline">Admin User</span>
             </div>
           </div>
         </header>

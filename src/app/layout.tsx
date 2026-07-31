@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Instrument_Sans, JetBrains_Mono } from 'next/font/google'
 import '@frontend/styles/globals.css'
-import Navbar       from '@frontend/components/Navbar'
 import Loader       from '@frontend/components/Loader'
 import CustomCursor from '@frontend/components/CustomCursor'
 
@@ -21,7 +20,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="font-sans antialiased" style={{ overflowX: 'hidden', maxWidth: '100vw', position: 'relative' }}>
         <Loader />
         <CustomCursor />
-        <Navbar />
         {children}
       </body>
     </html>
