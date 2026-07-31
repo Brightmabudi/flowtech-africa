@@ -1,6 +1,3 @@
-// ── Cookie-based session utilities ────────────────────────────────────────────
-// Uses Node's built-in crypto (HMAC-SHA256) — no extra JWT dependencies.
-// Safe for Next.js App Router route handlers (Node.js runtime).
 
 import crypto from 'crypto'
 

@@ -6,7 +6,7 @@ import Button from '@frontend/components/ui/Button'
 
 export default function CTA() {
   return (
-    <Section bg="tint" id="contact-cta">
+    <Section id="contact-cta">
       <Container className="max-w-5xl">
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}

@@ -4,13 +4,6 @@ import { ArrowRight, ChevronRight, Cloud } from 'lucide-react'
 import Button from '@frontend/components/ui/Button'
 import TechCanvas from '@frontend/components/TechCanvas'
 
-const STATS = [
-  { num: '20+',  label: 'Years in ICT'      },
-  { num: 'L1',   label: 'B-BBEE Certified'  },
-  { num: '0%',   label: 'Licensing Fees'    },
-  { num: '100+', label: 'Systems Delivered' },
-]
-
 const TRUST_BADGES = ['ISO 27001', 'ISO 9001', 'COBIT 5', 'B-BBEE L1', 'Microsoft Gold']
 
 const WORDS = ['Cloud Infrastructure', 'Cybersecurity', 'Managed IT Services', 'Digital Transformation']
@@ -37,7 +30,11 @@ export default function Hero() {
     >
       <TechCanvas />
 
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(ellipse 100% 80% at 50% -10%,rgba(91,53,213,.55) 0%,transparent 60%), radial-gradient(ellipse 60% 50% at 20% 60%,rgba(91,53,213,.2) 0%,transparent 50%), radial-gradient(ellipse 50% 40% at 80% 70%,rgba(232,64,26,.12) 0%,transparent 50%)' }} />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 [animation:heroGradientDrift_16s_ease-in-out_infinite] bg-[length:160%_160%]"
+        style={{ background: 'radial-gradient(ellipse 100% 80% at 50% -10%,rgba(91,53,213,.55) 0%,transparent 60%), radial-gradient(ellipse 60% 50% at 20% 60%,rgba(91,53,213,.2) 0%,transparent 50%), radial-gradient(ellipse 50% 40% at 80% 70%,rgba(232,64,26,.12) 0%,transparent 50%)' }}
+      />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
@@ -93,23 +90,7 @@ export default function Hero() {
           </Button>
         </div>
 
-        <div className="mt-[72px] flex w-full max-w-[680px] animate-[fadeUp_.9s_.4s_both] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md">
-          {STATS.map(({ num, label }, i) => (
-            <div
-              key={label}
-              className={`flex-1 px-3 py-5 text-center transition-colors hover:bg-white/[0.04] ${i < STATS.length - 1 ? 'border-r border-white/10' : ''}`}
-            >
-              <div className="bg-gradient-to-br from-brand-600 to-accent-500 bg-clip-text font-display text-[2rem] font-bold leading-none text-transparent">
-                {num}
-              </div>
-              <div className="mt-1 text-[11px] uppercase tracking-wide text-white/60">
-                {label}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-7 flex animate-[fadeUp_.9s_.5s_both] flex-wrap justify-center gap-3">
+        <div className="mt-[72px] flex animate-[fadeUp_.9s_.4s_both] flex-wrap justify-center gap-3">
           {TRUST_BADGES.map(b => (
             <span key={b} className="rounded-full border border-white/10 px-3 py-1 font-mono text-[10px] tracking-wide text-white/60">
               {b}

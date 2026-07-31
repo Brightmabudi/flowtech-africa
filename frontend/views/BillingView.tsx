@@ -10,7 +10,7 @@ import {
   X,
   Receipt,
   TrendingUp,
-  CircleDollarSign,
+  Banknote,
   FileText,
   ArrowUpDown,
   Filter,
@@ -403,7 +403,7 @@ export default function BillingPage() {
                   accentBorder="bg-gradient-to-r from-[#10B981] to-[#3B82F6]"
                 />
                 <KpiCard
-                  icon={CircleDollarSign}
+                  icon={Banknote}
                   label="Total Revenue Outstanding"
                   value={s ? formatZAR(s.outstandingCents) : '—'}
                   sub={`${(s?.counts.issued ?? 0) + (s?.counts.overdue ?? 0)} invoice${((s?.counts.issued ?? 0) + (s?.counts.overdue ?? 0)) !== 1 ? 's' : ''} awaiting payment`}
@@ -541,7 +541,7 @@ export default function BillingPage() {
                     {/* Invoice number */}
                     <td className="px-4 py-4">
                       <span className="inline-flex items-center gap-1.5 font-mono text-[12px] font-bold text-[#3B1FA8] bg-[rgba(59,31,168,0.05)] px-2.5 py-1 rounded-lg ring-1 ring-[rgba(59,31,168,0.1)] whitespace-nowrap">
-                        <CircleDollarSign className="w-3 h-3 opacity-60" />
+                        <Banknote className="w-3 h-3 opacity-60" />
                         {entry.invoiceNumber}
                       </span>
                     </td>

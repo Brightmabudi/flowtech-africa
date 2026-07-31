@@ -107,6 +107,13 @@ body::after {
   100% { transform: translateY(-120px)  rotate(360deg); opacity: 0;    }
 }
 
+/* Slow drifting radial-mesh background — Hero */
+@keyframes heroGradientDrift {
+  0%   { background-position: 20% 10%; }
+  50%  { background-position: 80% 60%; }
+  100% { background-position: 20% 10%; }
+}
+
 /* Orbit ring rotation — concentric circles in Hero */
 @keyframes orbitSpin {
   from { transform: translate(-50%,-50%) rotate(0deg);   }

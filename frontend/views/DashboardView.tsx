@@ -1,247 +1,181 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import DashboardLayout from '@frontend/components/DashboardLayout'
+import type { EnquiryListPayload, ContactEnquiryRecord } from '@backend/services/enquiry-types'
+import type { ApplicationListPayload, JobApplicationRecord } from '@backend/services/application-types'
+import type { VacancyPayload, Vacancy } from '@backend/services/vacancy-types'
 import {
-  Users,
-  Clock,
-  CreditCard,
-  TrendingUp,
-  CheckCircle2,
-  AlertCircle,
-  RefreshCw,
-  ArrowUpRight,
-  Building2,
-  ClipboardCheck,
-  Banknote,
+  Mail, Briefcase, Users, RefreshCw, AlertCircle, ArrowUpRight,
+  Plus, Eye, ClipboardList, Loader2,
 } from 'lucide-react'
-
-// ── Types ─────────────────────────────────────────────────────────────────────
-
-interface StatsPayload {
-  clients: { total: number }
-  requests: {
-    total: number
-    pending: number
-    underReview: number
-    processed: number
-    rejected: number
-  }
-  billing: {
-    totalCents: number
-    paidCents: number
-    outstandingCents: number
-    totalDisplay: string
-    paidDisplay: string
-    outstandingDisplay: string
-    currency: string
-    recordCount: number
-  }
-}
-
-interface FetchState {
-  data: StatsPayload | null
-  loading: boolean
-  error: string | null
-  lastFetched: Date | null
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 const SAST = 'Africa/Johannesburg'
 
+interface StatsPayload {
+  enquiries:    { total: number; new: number; unread: number }
+  vacancies:    { total: number; active: number; closed: number }
+  applications: { total: number; new: number; shortlisted: number }
+}
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-ZA', { timeZone: SAST, day: '2-digit', month: 'short', year: 'numeric' })
+}
+
 function getSASTGreeting(): string {
-  const hour = Number(
-    new Date().toLocaleString('en-ZA', { timeZone: SAST, hour: 'numeric', hour12: false }),
-  )
+  const hour = Number(new Date().toLocaleString('en-ZA', { timeZone: SAST, hour: 'numeric', hour12: false }))
   if (hour < 12) return 'Good morning'
   if (hour < 17) return 'Good afternoon'
   return 'Good evening'
 }
 
-function formatSASTDate(): string {
-  return new Date().toLocaleDateString('en-ZA', {
-    timeZone: SAST,
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+// ── Status colour maps (subtle, matching each entity's own status vocabulary) ─
+
+const ENQUIRY_STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  NEW:       { bg: 'rgba(59,130,246,0.08)',  text: '#1D4ED8', border: 'rgba(59,130,246,0.2)' },
+  READ:      { bg: 'rgba(148,163,184,0.1)',  text: '#475569', border: 'rgba(148,163,184,0.25)' },
+  RESPONDED: { bg: 'rgba(16,185,129,0.08)',  text: '#047857', border: 'rgba(16,185,129,0.2)' },
+  ARCHIVED:  { bg: 'rgba(15,23,42,0.05)',    text: '#475569', border: 'rgba(15,23,42,0.12)' },
 }
 
-function formatSASTTime(): string {
-  return new Date().toLocaleTimeString('en-ZA', {
-    timeZone: SAST,
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  })
+const APPLICATION_STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  NEW:         { bg: 'rgba(59,130,246,0.08)',  text: '#1D4ED8', border: 'rgba(59,130,246,0.2)' },
+  REVIEWED:    { bg: 'rgba(245,158,11,0.08)',  text: '#B45309', border: 'rgba(245,158,11,0.2)' },
+  SHORTLISTED: { bg: 'rgba(16,185,129,0.08)',  text: '#047857', border: 'rgba(16,185,129,0.2)' },
+  REJECTED:    { bg: 'rgba(239,68,68,0.08)',   text: '#DC2626', border: 'rgba(239,68,68,0.2)'  },
+  ARCHIVED:    { bg: 'rgba(15,23,42,0.05)',    text: '#475569', border: 'rgba(15,23,42,0.12)' },
 }
 
-function formatZAR(centsString: string): string {
-  const amount = parseFloat(centsString)
-  return new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: 'ZAR',
-    minimumFractionDigits: 2,
-  }).format(amount)
+const VACANCY_STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  DRAFT:    { bg: 'rgba(148,163,184,0.1)',  text: '#475569', border: 'rgba(148,163,184,0.25)' },
+  ACTIVE:   { bg: 'rgba(16,185,129,0.08)',  text: '#047857', border: 'rgba(16,185,129,0.2)' },
+  CLOSED:   { bg: 'rgba(245,158,11,0.08)',  text: '#B45309', border: 'rgba(245,158,11,0.2)' },
+  ARCHIVED: { bg: 'rgba(15,23,42,0.05)',    text: '#475569', border: 'rgba(15,23,42,0.12)' },
 }
 
-// ── Skeleton primitives ───────────────────────────────────────────────────────
-
-function Skeleton({ className }: { className?: string }) {
+function StatusBadge({ status, colors }: { status: string; colors: Record<string, { bg: string; text: string; border: string }> }) {
+  const c = colors[status] ?? colors.NEW ?? { bg: 'rgba(148,163,184,0.1)', text: '#475569', border: 'rgba(148,163,184,0.25)' }
   return (
-    <div
-      className={[
-        'animate-pulse rounded-lg bg-gradient-to-r from-[#F1F5F9] via-[#E2E8F0] to-[#F1F5F9] bg-[length:200%_100%]',
-        className,
-      ].join(' ')}
-      style={{ backgroundSize: '200% 100%', animation: 'shimmer 1.6s ease-in-out infinite' }}
-    />
+    <span style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}` }}
+      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap">
+      {status.replace('_', ' ')}
+    </span>
   )
 }
 
-function MetricCardSkeleton() {
+// ── Skeletons ─────────────────────────────────────────────────────────────────
+
+function Sk({ className }: { className?: string }) {
+  return <div className={['rounded animate-pulse bg-[#F1F5F9]', className].join(' ')} />
+}
+
+function KPICardSkeleton() {
   return (
     <div className="rounded-2xl border border-[rgba(15,23,42,0.08)] bg-white p-6 shadow-sm">
       <div className="flex items-start justify-between mb-5">
-        <Skeleton className="h-11 w-11 rounded-xl" />
-        <Skeleton className="h-5 w-16 rounded-full" />
+        <Sk className="h-11 w-11 rounded-xl" />
+        <Sk className="h-5 w-16 rounded-full" />
       </div>
-      <Skeleton className="h-8 w-28 mb-2" />
-      <Skeleton className="h-4 w-36 mb-4" />
-      <div className="pt-4 border-t border-[rgba(15,23,42,0.06)]">
-        <Skeleton className="h-3.5 w-24" />
-      </div>
+      <Sk className="h-8 w-20 mb-2" />
+      <Sk className="h-4 w-32 mb-4" />
+      <div className="pt-4 border-t border-[rgba(15,23,42,0.06)]"><Sk className="h-3.5 w-28" /></div>
     </div>
   )
 }
 
-function SecondaryCardSkeleton() {
+function RowSkeleton() {
   return (
-    <div className="rounded-xl border border-[rgba(15,23,42,0.08)] bg-white p-4 shadow-sm flex items-center gap-4">
-      <Skeleton className="h-9 w-9 rounded-lg flex-shrink-0" />
-      <div className="flex-1 space-y-2">
-        <Skeleton className="h-3.5 w-20" />
-        <Skeleton className="h-5 w-12" />
-      </div>
+    <div className="flex items-center gap-3 py-3 px-4 border-b border-[rgba(15,23,42,0.05)] last:border-0">
+      <Sk className="h-8 w-8 rounded-full flex-shrink-0" />
+      <div className="flex-1 space-y-1.5"><Sk className="h-3.5 w-32" /><Sk className="h-3 w-48" /></div>
+      <Sk className="h-5 w-16 rounded-full flex-shrink-0" />
     </div>
   )
 }
 
-// ── Metric card ───────────────────────────────────────────────────────────────
+// ── Empty / error primitives ─────────────────────────────────────────────────
 
-interface MetricCardProps {
-  label: string
-  value: string
-  sub: string
+function PanelEmpty({ icon: Icon, message }: { icon: React.ComponentType<{ className?: string }>; message: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-10 text-center">
+      <div className="w-10 h-10 rounded-xl bg-[rgba(59,31,168,0.06)] flex items-center justify-center mb-3">
+        <Icon className="w-4.5 h-4.5 text-[#3B1FA8]" />
+      </div>
+      <p className="text-[13px] text-[#94A3B8]">{message}</p>
+    </div>
+  )
+}
+
+function PanelError({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="flex items-start gap-3 p-4">
+      <AlertCircle className="w-4 h-4 text-[#FF5C3A] flex-shrink-0 mt-0.5" />
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold text-[#0F172A]">Failed to load</p>
+        <p className="text-xs text-[#475569] mt-0.5">{message}</p>
+      </div>
+      <button onClick={onRetry} className="flex items-center gap-1 text-xs font-semibold text-[#3B1FA8] hover:text-[#FF5C3A] transition-colors flex-shrink-0">
+        <RefreshCw className="w-3 h-3" />Retry
+      </button>
+    </div>
+  )
+}
+
+// ── KPI card (clickable) ──────────────────────────────────────────────────────
+
+interface KPICardProps {
+  href: string
   icon: React.ComponentType<{ className?: string }>
   accentClass: string
   iconBgClass: string
   iconColorClass: string
-  tag?: string
-  tagClass?: string
+  total: number
+  label: string
+  sub: string
+  tag: string
+  tagClass: string
   footer: string
 }
 
-function MetricCard({
-  label,
-  value,
-  sub,
-  icon: Icon,
-  accentClass,
-  iconBgClass,
-  iconColorClass,
-  tag,
-  tagClass,
-  footer,
-}: MetricCardProps) {
+function KPICard({ href, icon: Icon, accentClass, iconBgClass, iconColorClass, total, label, sub, tag, tagClass, footer }: KPICardProps) {
   return (
-    <div
-      className={[
-        'group relative rounded-2xl border bg-white p-6 shadow-sm transition-all duration-300',
-        'hover:shadow-lg hover:-translate-y-0.5 cursor-default overflow-hidden',
-        'border-[rgba(15,23,42,0.08)]',
-      ].join(' ')}
+    <Link
+      href={href}
+      className="group relative block rounded-2xl border border-[rgba(15,23,42,0.08)] bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3B1FA8]"
     >
-      {/* Accent strip */}
       <div className={['absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl', accentClass].join(' ')} />
-
       <div className="flex items-start justify-between mb-5">
-        {/* Icon */}
         <div className={['w-11 h-11 rounded-xl flex items-center justify-center', iconBgClass].join(' ')}>
           <Icon className={['w-5 h-5', iconColorClass].join(' ')} />
         </div>
-
-        {/* Badge */}
-        {tag && (
-          <span className={['text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide', tagClass].join(' ')}>
-            {tag}
-          </span>
-        )}
+        <span className={['text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide', tagClass].join(' ')}>{tag}</span>
       </div>
-
-      {/* Value */}
-      <p className="text-3xl font-black text-[#0F172A] leading-none mb-1.5 tabular-nums">
-        {value}
-      </p>
+      <p className="text-3xl font-black text-[#0F172A] leading-none mb-1.5 tabular-nums">{total.toLocaleString('en-ZA')}</p>
       <p className="text-sm font-semibold text-[#0F172A] mb-0.5">{label}</p>
       <p className="text-xs text-[#94A3B8]">{sub}</p>
-
-      {/* Footer */}
       <div className="mt-4 pt-4 border-t border-[rgba(15,23,42,0.06)] flex items-center gap-1.5">
         <ArrowUpRight className="w-3.5 h-3.5 text-[#CBD5E1] group-hover:text-[#3B1FA8] transition-colors" />
         <span className="text-[11px] text-[#94A3B8] group-hover:text-[#475569] transition-colors">{footer}</span>
       </div>
-    </div>
+    </Link>
   )
 }
 
-// ── Secondary stat pill ───────────────────────────────────────────────────────
+// ── Panel wrapper ─────────────────────────────────────────────────────────────
 
-function SecondaryCard({
-  icon: Icon,
-  label,
-  value,
-  iconBg,
-  iconColor,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  label: string
-  value: string
-  iconBg: string
-  iconColor: string
-}) {
+function Panel({ title, viewAllHref, children }: { title: string; viewAllHref?: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-[rgba(15,23,42,0.08)] bg-white p-4 shadow-sm flex items-center gap-3.5">
-      <div className={['w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0', iconBg].join(' ')}>
-        <Icon className={['w-4 h-4', iconColor].join(' ')} />
+    <div className="rounded-2xl border border-[rgba(15,23,42,0.08)] bg-white shadow-sm overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[rgba(15,23,42,0.06)]">
+        <h2 className="text-sm font-bold text-[#0F172A]">{title}</h2>
+        {viewAllHref && (
+          <Link href={viewAllHref} className="text-[11px] font-semibold text-[#3B1FA8] hover:text-[#2D1580] transition-colors">
+            View all
+          </Link>
+        )}
       </div>
-      <div className="min-w-0">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#94A3B8] leading-none mb-1">{label}</p>
-        <p className="text-base font-black text-[#0F172A] tabular-nums leading-none">{value}</p>
-      </div>
-    </div>
-  )
-}
-
-// ── Error state ───────────────────────────────────────────────────────────────
-
-function ErrorBanner({ message, onRetry }: { message: string; onRetry: () => void }) {
-  return (
-    <div className="rounded-xl border border-[rgba(255,92,58,0.2)] bg-[rgba(255,92,58,0.04)] p-4 flex items-start gap-3">
-      <AlertCircle className="w-5 h-5 text-[#FF5C3A] flex-shrink-0 mt-0.5" />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-[#0F172A]">Failed to load statistics</p>
-        <p className="text-xs text-[#475569] mt-0.5">{message}</p>
-      </div>
-      <button
-        onClick={onRetry}
-        className="flex items-center gap-1.5 text-xs font-semibold text-[#3B1FA8] hover:text-[#FF5C3A] transition-colors flex-shrink-0"
-      >
-        <RefreshCw className="w-3.5 h-3.5" />
-        Retry
-      </button>
+      {children}
     </div>
   )
 }
@@ -249,66 +183,57 @@ function ErrorBanner({ message, onRetry }: { message: string; onRetry: () => voi
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const [fetchState, setFetchState] = useState<FetchState>({
-    data: null,
-    loading: true,
-    error: null,
-    lastFetched: null,
-  })
+  const [stats, setStats]               = useState<StatsPayload | null>(null)
+  const [statsError, setStatsError]     = useState<string | null>(null)
+  const [enquiries, setEnquiries]       = useState<ContactEnquiryRecord[] | null>(null)
+  const [enquiriesError, setEnquiriesError] = useState<string | null>(null)
+  const [applications, setApplications] = useState<JobApplicationRecord[] | null>(null)
+  const [applicationsError, setApplicationsError] = useState<string | null>(null)
+  const [vacancies, setVacancies]       = useState<Vacancy[] | null>(null)
+  const [vacanciesError, setVacanciesError] = useState<string | null>(null)
+  const [loading, setLoading]           = useState(true)
+  const [lastFetched, setLastFetched]   = useState<Date | null>(null)
 
-  // Live SAST clock — ticks every minute
-  const [clock, setClock] = useState({ date: formatSASTDate(), time: formatSASTTime() })
-  useEffect(() => {
-    const id = setInterval(() => {
-      setClock({ date: formatSASTDate(), time: formatSASTTime() })
-    }, 60_000)
-    return () => clearInterval(id)
+  const fetchAll = useCallback(async () => {
+    setLoading(true)
+    setStatsError(null); setEnquiriesError(null); setApplicationsError(null); setVacanciesError(null)
+
+    const [statsRes, enquiriesRes, applicationsRes, vacanciesRes] = await Promise.allSettled([
+      fetch('/api/dashboard/stats', { cache: 'no-store' }).then(r => r.json()),
+      fetch('/api/dashboard/enquiries', { cache: 'no-store' }).then(r => r.json()),
+      fetch('/api/dashboard/applications', { cache: 'no-store' }).then(r => r.json()),
+      fetch('/api/dashboard/vacancies?all=1', { cache: 'no-store' }).then(r => r.json()),
+    ])
+
+    if (statsRes.status === 'fulfilled' && statsRes.value.success) setStats(statsRes.value.data)
+    else setStatsError(statsRes.status === 'fulfilled' ? statsRes.value.error : 'Network error')
+
+    if (enquiriesRes.status === 'fulfilled' && enquiriesRes.value.success) {
+      setEnquiries((enquiriesRes.value.data as EnquiryListPayload).enquiries.slice(0, 5))
+    } else setEnquiriesError(enquiriesRes.status === 'fulfilled' ? enquiriesRes.value.error : 'Network error')
+
+    if (applicationsRes.status === 'fulfilled' && applicationsRes.value.success) {
+      setApplications((applicationsRes.value.data as ApplicationListPayload).applications.slice(0, 5))
+    } else setApplicationsError(applicationsRes.status === 'fulfilled' ? applicationsRes.value.error : 'Network error')
+
+    if (vacanciesRes.status === 'fulfilled' && vacanciesRes.value.success) {
+      setVacancies((vacanciesRes.value.data as VacancyPayload).vacancies)
+    } else setVacanciesError(vacanciesRes.status === 'fulfilled' ? vacanciesRes.value.error : 'Network error')
+
+    setLoading(false)
+    setLastFetched(new Date())
   }, [])
 
-  const fetchStats = useCallback(async () => {
-    setFetchState((prev) => ({ ...prev, loading: true, error: null }))
-    try {
-      const res = await fetch('/api/dashboard/stats', { cache: 'no-store' })
-      if (!res.ok) throw new Error(`Server responded with ${res.status}`)
-      const body = await res.json()
-      if (!body.success) throw new Error(body.error ?? 'Unknown error from API')
-      setFetchState({ data: body.data, loading: false, error: null, lastFetched: new Date() })
-    } catch (err) {
-      setFetchState((prev) => ({
-        ...prev,
-        loading: false,
-        error: err instanceof Error ? err.message : 'Unexpected error',
-      }))
-    }
-  }, [])
+  useEffect(() => { fetchAll() }, [fetchAll])
 
-  useEffect(() => { fetchStats() }, [fetchStats])
-
-  const { data, loading, error, lastFetched } = fetchState
-
-  // ── Derived display values ──────────────────────────────────────────────────
-  const totalClients      = data?.clients.total ?? 0
-  const pendingRequests   = data?.requests.pending ?? 0
-  const underReview       = data?.requests.underReview ?? 0
-  const processedRequests = data?.requests.processed ?? 0
-  const totalRequests     = data?.requests.total ?? 0
-  const outstandingZAR    = data ? formatZAR(data.billing.outstandingDisplay) : '—'
-  const totalRevenueZAR   = data ? formatZAR(data.billing.totalDisplay) : '—'
-  const paidZAR           = data ? formatZAR(data.billing.paidDisplay) : '—'
+  const newEnquiries = stats?.enquiries.new ?? 0
+  const newApplications = stats?.applications.new ?? 0
 
   return (
     <DashboardLayout>
-      {/* Shimmer keyframe — injected once at the page level */}
-      <style>{`
-        @keyframes shimmer {
-          0%   { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
-      `}</style>
-
       <div className="max-w-6xl mx-auto space-y-6">
 
-        {/* ── Welcome header ─────────────────────────────────────────────── */}
+        {/* ── Header ─────────────────────────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -320,30 +245,18 @@ export default function DashboardPage() {
             <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight leading-tight">
               {getSASTGreeting()}, Admin
             </h1>
-            <p className="text-sm text-[#475569] mt-1">
-              {clock.date}&ensp;·&ensp;
-              <span className="font-mono tabular-nums">{clock.time}</span>
-              <span className="ml-1 text-[#94A3B8]">SAST</span>
-            </p>
+            <p className="text-sm text-[#475569] mt-1">Enquiries, vacancies, and applications at a glance</p>
           </div>
-
-          {/* Last-fetched + refresh */}
           <div className="flex items-center gap-2 flex-shrink-0">
             {lastFetched && !loading && (
               <p className="text-[11px] text-[#94A3B8]">
-                Updated{' '}
-                {lastFetched.toLocaleTimeString('en-ZA', {
-                  timeZone: SAST,
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: false,
-                })}
+                Updated {lastFetched.toLocaleTimeString('en-ZA', { timeZone: SAST, hour: '2-digit', minute: '2-digit', hour12: false })}
               </p>
             )}
             <button
-              onClick={fetchStats}
+              onClick={fetchAll}
               disabled={loading}
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#475569] hover:text-[#3B1FA8] transition-colors disabled:opacity-40 disabled:cursor-not-allowed px-3 py-1.5 rounded-lg border border-[rgba(15,23,42,0.08)] bg-white hover:border-[rgba(59,31,168,0.2)] shadow-sm"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#475569] hover:text-[#3B1FA8] transition-colors disabled:opacity-40 px-3 py-1.5 rounded-lg border border-[rgba(15,23,42,0.08)] bg-white hover:border-[rgba(59,31,168,0.2)] shadow-sm"
             >
               <RefreshCw className={['w-3.5 h-3.5', loading ? 'animate-spin' : ''].join(' ')} />
               Refresh
@@ -351,206 +264,173 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* ── Error banner ─────────────────────────────────────────────────── */}
-        {error && <ErrorBanner message={error} onRetry={fetchStats} />}
+        {statsError && <PanelError message={statsError} onRetry={fetchAll} />}
 
-        {/* ── Primary KPI cards ─────────────────────────────────────────────── */}
-        <section aria-label="Key performance indicators">
+        {/* ── KPI cards ──────────────────────────────────────────────────── */}
+        <section aria-label="Key metrics">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {loading ? (
-              <>
-                <MetricCardSkeleton />
-                <MetricCardSkeleton />
-                <MetricCardSkeleton />
-              </>
+              <><KPICardSkeleton /><KPICardSkeleton /><KPICardSkeleton /></>
             ) : (
               <>
-                {/* Total Registered Clients */}
-                <MetricCard
-                  label="Total Registered Clients"
-                  value={totalClients.toLocaleString('en-ZA')}
-                  sub="Active client profiles in the system"
-                  icon={Users}
+                <KPICard
+                  href="/dashboard/enquiries"
+                  icon={Mail}
                   accentClass="bg-gradient-to-r from-[#3B1FA8] to-[#6D4AE8]"
                   iconBgClass="bg-[rgba(59,31,168,0.08)]"
                   iconColorClass="text-[#3B1FA8]"
-                  tag="All time"
-                  tagClass="bg-[rgba(59,31,168,0.08)] text-[#3B1FA8]"
-                  footer="View all client profiles"
+                  total={stats?.enquiries.total ?? 0}
+                  label="Enquiries"
+                  sub={`${stats?.enquiries.new ?? 0} new · ${stats?.enquiries.unread ?? 0} unread`}
+                  tag={newEnquiries > 0 ? 'Action needed' : 'Clear'}
+                  tagClass={newEnquiries > 0 ? 'bg-[rgba(255,92,58,0.1)] text-[#FF5C3A]' : 'bg-[rgba(16,185,129,0.1)] text-[#10B981]'}
+                  footer="View all enquiries"
                 />
-
-                {/* Pending Requests */}
-                <MetricCard
-                  label="Pending Requests"
-                  value={pendingRequests.toLocaleString('en-ZA')}
-                  sub={`${underReview} under review · ${totalRequests} total`}
-                  icon={Clock}
-                  accentClass="bg-gradient-to-r from-[#F59E0B] to-[#FF5C3A]"
-                  iconBgClass="bg-[rgba(245,158,11,0.08)]"
-                  iconColorClass="text-[#F59E0B]"
-                  tag={pendingRequests > 0 ? 'Action needed' : 'Clear'}
-                  tagClass={
-                    pendingRequests > 0
-                      ? 'bg-[rgba(255,92,58,0.1)] text-[#FF5C3A]'
-                      : 'bg-[rgba(16,185,129,0.1)] text-[#10B981]'
-                  }
-                  footer="Open intake submissions"
+                <KPICard
+                  href="/dashboard/vacancies"
+                  icon={Briefcase}
+                  accentClass="bg-gradient-to-r from-[#0EA5E9] to-[#38BDF8]"
+                  iconBgClass="bg-[rgba(14,165,233,0.08)]"
+                  iconColorClass="text-[#0EA5E9]"
+                  total={stats?.vacancies.total ?? 0}
+                  label="Job Vacancies"
+                  sub={`${stats?.vacancies.active ?? 0} active · ${stats?.vacancies.closed ?? 0} closed`}
+                  tag={(stats?.vacancies.active ?? 0) > 0 ? 'Hiring' : 'None active'}
+                  tagClass={(stats?.vacancies.active ?? 0) > 0 ? 'bg-[rgba(16,185,129,0.1)] text-[#10B981]' : 'bg-[rgba(148,163,184,0.15)] text-[#475569]'}
+                  footer="Manage vacancies"
                 />
-
-                {/* Outstanding Invoices */}
-                <MetricCard
-                  label="Outstanding Invoices"
-                  value={outstandingZAR}
-                  sub={`${paidZAR} paid · ${totalRevenueZAR} total billed`}
-                  icon={CreditCard}
+                <KPICard
+                  href="/dashboard/applications"
+                  icon={Users}
                   accentClass="bg-gradient-to-r from-[#FF5C3A] to-[#F59E0B]"
                   iconBgClass="bg-[rgba(255,92,58,0.08)]"
                   iconColorClass="text-[#FF5C3A]"
-                  tag="Invoiced"
-                  tagClass="bg-[rgba(255,92,58,0.08)] text-[#FF5C3A]"
-                  footer="Open billing & invoices"
+                  total={stats?.applications.total ?? 0}
+                  label="Applications"
+                  sub={`${stats?.applications.new ?? 0} new · ${stats?.applications.shortlisted ?? 0} shortlisted`}
+                  tag={newApplications > 0 ? 'New' : 'Clear'}
+                  tagClass={newApplications > 0 ? 'bg-[rgba(59,130,246,0.1)] text-[#1D4ED8]' : 'bg-[rgba(16,185,129,0.1)] text-[#10B981]'}
+                  footer="View all applications"
                 />
               </>
             )}
           </div>
         </section>
 
-        {/* ── Secondary stats strip ──────────────────────────────────────────── */}
-        <section aria-label="Secondary statistics">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#CBD5E1] mb-3">
-            Breakdown
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {/* ── Recent Enquiries + Recent Applications ────────────────────────── */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4" aria-label="Recent activity">
+
+          <Panel title="Recent Enquiries" viewAllHref="/dashboard/enquiries">
             {loading ? (
-              <>
-                <SecondaryCardSkeleton />
-                <SecondaryCardSkeleton />
-                <SecondaryCardSkeleton />
-                <SecondaryCardSkeleton />
-              </>
+              <div>{[1, 2, 3].map(i => <RowSkeleton key={i} />)}</div>
+            ) : enquiriesError ? (
+              <PanelError message={enquiriesError} onRetry={fetchAll} />
+            ) : !enquiries || enquiries.length === 0 ? (
+              <PanelEmpty icon={Mail} message="No enquiries yet." />
             ) : (
-              <>
-                <SecondaryCard
-                  icon={Building2}
-                  label="Total Requests"
-                  value={totalRequests.toLocaleString('en-ZA')}
-                  iconBg="bg-[rgba(59,31,168,0.06)]"
-                  iconColor="text-[#3B1FA8]"
-                />
-                <SecondaryCard
-                  icon={CheckCircle2}
-                  label="Processed"
-                  value={processedRequests.toLocaleString('en-ZA')}
-                  iconBg="bg-[rgba(16,185,129,0.08)]"
-                  iconColor="text-[#10B981]"
-                />
-                <SecondaryCard
-                  icon={ClipboardCheck}
-                  label="Under Review"
-                  value={underReview.toLocaleString('en-ZA')}
-                  iconBg="bg-[rgba(245,158,11,0.08)]"
-                  iconColor="text-[#F59E0B]"
-                />
-                <SecondaryCard
-                  icon={Banknote}
-                  label="Revenue Paid"
-                  value={paidZAR}
-                  iconBg="bg-[rgba(16,185,129,0.08)]"
-                  iconColor="text-[#10B981]"
-                />
-              </>
+              <ul className="list-none p-0 m-0">
+                {enquiries.map(e => (
+                  <li key={e.id} className="flex items-center gap-3 px-5 py-3 border-b border-[rgba(15,23,42,0.05)] last:border-0 hover:bg-[#F9FAFB] transition-colors">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] font-semibold text-[#0F172A] truncate">{e.firstName} {e.lastName}</p>
+                      <p className="text-[11px] text-[#94A3B8] truncate">{e.email} · {e.serviceInterest}</p>
+                      <p className="text-[10px] text-[#CBD5E1] mt-0.5">{formatDate(e.createdAt)}</p>
+                    </div>
+                    <StatusBadge status={e.status} colors={ENQUIRY_STATUS_COLORS} />
+                    <Link href="/dashboard/enquiries" aria-label={`View enquiry from ${e.firstName} ${e.lastName}`} className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#3B1FA8] hover:bg-[rgba(59,31,168,0.06)] transition-colors flex-shrink-0">
+                      <Eye className="w-3.5 h-3.5" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             )}
-          </div>
+          </Panel>
+
+          <Panel title="Recent Applications" viewAllHref="/dashboard/applications">
+            {loading ? (
+              <div>{[1, 2, 3].map(i => <RowSkeleton key={i} />)}</div>
+            ) : applicationsError ? (
+              <PanelError message={applicationsError} onRetry={fetchAll} />
+            ) : !applications || applications.length === 0 ? (
+              <PanelEmpty icon={Users} message="No applications yet." />
+            ) : (
+              <ul className="list-none p-0 m-0">
+                {applications.map(a => (
+                  <li key={a.id} className="flex items-center gap-3 px-5 py-3 border-b border-[rgba(15,23,42,0.05)] last:border-0 hover:bg-[#F9FAFB] transition-colors">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] font-semibold text-[#0F172A] truncate">{a.firstName} {a.lastName}</p>
+                      <p className="text-[11px] text-[#94A3B8] truncate">{a.vacancy?.title ?? `Vacancy #${a.vacancyId}`}</p>
+                      <p className="text-[10px] text-[#CBD5E1] mt-0.5">{formatDate(a.createdAt)}</p>
+                    </div>
+                    <StatusBadge status={a.status} colors={APPLICATION_STATUS_COLORS} />
+                    <Link href="/dashboard/applications" aria-label={`View application from ${a.firstName} ${a.lastName}`} className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#3B1FA8] hover:bg-[rgba(59,31,168,0.06)] transition-colors flex-shrink-0">
+                      <Eye className="w-3.5 h-3.5" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Panel>
+
         </section>
 
-        {/* ── Activity summary panel ─────────────────────────────────────────── */}
-        <section aria-label="System health and quick actions">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* ── Vacancy Overview + Quick Actions ───────────────────────────────── */}
+        <section className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-4" aria-label="Vacancy overview and quick actions">
 
-            {/* System status */}
-            <div className="rounded-2xl border border-[rgba(15,23,42,0.08)] bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-bold text-[#0F172A]">System Health</h2>
-                <span className="flex items-center gap-1.5 text-[10px] font-bold text-[#10B981] uppercase tracking-wide">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-                  Operational
-                </span>
-              </div>
-              <div className="space-y-3">
-                {[
-                  { label: 'Database',      status: 'Connected',   ok: true  },
-                  { label: 'API Layer',     status: 'Responding',  ok: true  },
-                  { label: 'Intake Flow',   status: 'Active',      ok: true  },
-                  { label: 'Billing Engine', status: data ? 'Live' : loading ? 'Checking…' : 'Unreachable', ok: !!data },
-                ].map((row) => (
-                  <div key={row.label} className="flex items-center justify-between py-2 border-b border-[rgba(15,23,42,0.05)] last:border-0">
-                    <span className="text-sm text-[#475569]">{row.label}</span>
-                    <span
-                      className={[
-                        'flex items-center gap-1.5 text-xs font-semibold',
-                        row.ok ? 'text-[#10B981]' : 'text-[#FF5C3A]',
-                      ].join(' ')}
-                    >
-                      {row.ok
-                        ? <CheckCircle2 className="w-3.5 h-3.5" />
-                        : <AlertCircle  className="w-3.5 h-3.5" />}
-                      {row.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick actions */}
-            <div className="rounded-2xl border border-[rgba(15,23,42,0.08)] bg-white p-5 shadow-sm">
-              <h2 className="text-sm font-bold text-[#0F172A] mb-4">Quick Actions</h2>
-              <div className="space-y-2">
-                {[
-                  {
-                    icon: Users,
-                    label: 'Register New Client',
-                    sub: 'Add a client profile to the system',
-                    iconBg: 'bg-[rgba(59,31,168,0.08)]',
-                    iconColor: 'text-[#3B1FA8]',
-                    href: '/dashboard/intake',
-                  },
-                  {
-                    icon: ClipboardCheck,
-                    label: 'Review Pending Submissions',
-                    sub: `${pendingRequests} request${pendingRequests !== 1 ? 's' : ''} awaiting action`,
-                    iconBg: 'bg-[rgba(245,158,11,0.08)]',
-                    iconColor: 'text-[#F59E0B]',
-                    href: '/dashboard/registrations',
-                  },
-                  {
-                    icon: TrendingUp,
-                    label: 'Generate Invoice Report',
-                    sub: `${data?.billing.recordCount ?? 0} billing records on file`,
-                    iconBg: 'bg-[rgba(255,92,58,0.08)]',
-                    iconColor: 'text-[#FF5C3A]',
-                    href: '/dashboard/billing',
-                  },
-                ].map((action) => (
-                  <a
-                    key={action.label}
-                    href={action.href}
-                    className="flex items-center gap-3.5 p-3 rounded-xl hover:bg-[#F9FAFB] transition-colors group cursor-pointer"
-                  >
-                    <div className={['w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0', action.iconBg].join(' ')}>
-                      <action.icon className={['w-4 h-4', action.iconColor].join(' ')} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#0F172A] group-hover:text-[#3B1FA8] transition-colors truncate">
-                        {action.label}
+          <Panel title="Vacancy Overview" viewAllHref="/dashboard/vacancies">
+            {loading ? (
+              <div>{[1, 2, 3].map(i => <RowSkeleton key={i} />)}</div>
+            ) : vacanciesError ? (
+              <PanelError message={vacanciesError} onRetry={fetchAll} />
+            ) : !vacancies || vacancies.length === 0 ? (
+              <PanelEmpty icon={Briefcase} message="No vacancies yet." />
+            ) : (
+              <ul className="list-none p-0 m-0">
+                {vacancies.map(v => (
+                  <li key={v.id} className="flex items-center gap-3 px-5 py-3 border-b border-[rgba(15,23,42,0.05)] last:border-0 hover:bg-[#F9FAFB] transition-colors">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] font-semibold text-[#0F172A] truncate">{v.title}</p>
+                      <p className="text-[11px] text-[#94A3B8]">
+                        {v.applicationCount ?? 0} application{v.applicationCount === 1 ? '' : 's'}
+                        {v.closingDate && <> · Closes {formatDate(v.closingDate)}</>}
                       </p>
-                      <p className="text-[11px] text-[#94A3B8] truncate">{action.sub}</p>
                     </div>
-                    <ArrowUpRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#3B1FA8] transition-colors flex-shrink-0" />
-                  </a>
+                    <StatusBadge status={v.status} colors={VACANCY_STATUS_COLORS} />
+                    <Link href="/dashboard/vacancies" aria-label={`Manage ${v.title}`} className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#3B1FA8] hover:bg-[rgba(59,31,168,0.06)] transition-colors flex-shrink-0">
+                      <Eye className="w-3.5 h-3.5" />
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
+            )}
+          </Panel>
+
+          <div className="rounded-2xl border border-[rgba(15,23,42,0.08)] bg-white p-5 shadow-sm">
+            <h2 className="text-sm font-bold text-[#0F172A] mb-4">Quick Actions</h2>
+            <div className="space-y-2">
+              {[
+                { icon: Plus,          label: 'Add New Vacancy',   sub: 'Post a new job opening',           iconBg: 'bg-[rgba(14,165,233,0.08)]',  iconColor: 'text-[#0EA5E9]', href: '/dashboard/vacancies/new' },
+                { icon: Mail,          label: 'View New Enquiries', sub: `${newEnquiries} awaiting review`,  iconBg: 'bg-[rgba(59,31,168,0.08)]',   iconColor: 'text-[#3B1FA8]', href: '/dashboard/enquiries' },
+                { icon: ClipboardList, label: 'Review Applications', sub: `${newApplications} awaiting review`, iconBg: 'bg-[rgba(255,92,58,0.08)]', iconColor: 'text-[#FF5C3A]', href: '/dashboard/applications' },
+              ].map((action) => (
+                <Link
+                  key={action.label}
+                  href={action.href}
+                  className="flex items-center gap-3.5 p-3 rounded-xl hover:bg-[#F9FAFB] transition-colors group"
+                >
+                  <div className={['w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0', action.iconBg].join(' ')}>
+                    <action.icon className={['w-4 h-4', action.iconColor].join(' ')} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-[#0F172A] group-hover:text-[#3B1FA8] transition-colors truncate">{action.label}</p>
+                    <p className="text-[11px] text-[#94A3B8] truncate">{loading ? <Loader2 className="w-3 h-3 animate-spin inline" /> : action.sub}</p>
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#3B1FA8] transition-colors flex-shrink-0" />
+                </Link>
+              ))}
             </div>
           </div>
+
         </section>
 
       </div>

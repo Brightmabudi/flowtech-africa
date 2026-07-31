@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { prisma } from '@backend/services/db'
 
 const VALID_COMPANY_SIZES = ['1 - 50 employees', '51 - 200 employees', '201 - 1000 employees', '1000+ employees']
 const VALID_SERVICES = [
@@ -72,6 +73,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true })
   }
 
+  // ── 1. Validate ─────────────────────────────────────────────────────────
   const validationError = validate(body)
   if (validationError) {
     return NextResponse.json({ success: false, error: validationError }, { status: 400 })
@@ -79,12 +81,24 @@ export async function POST(req: NextRequest) {
 
   const firstName = body.firstName!.trim()
   const lastName = body.lastName!.trim()
-  const email = body.email!.trim()
-  const phone = body.phone?.trim() ?? ''
+  const email = body.email!.trim().toLowerCase()
+  const phone = body.phone?.trim() || null
   const companySize = body.companySize!.trim()
   const service = body.service!.trim()
   const message = body.message!.trim()
 
+  // ── 2. Save to database (must succeed before we report success) ────────
+  let enquiry
+  try {
+    enquiry = await prisma.contactEnquiry.create({
+      data: { firstName, lastName, email, phone, companySize, serviceInterest: service, message },
+    })
+  } catch (error) {
+    console.error('[contact] Failed to save enquiry to database:', error)
+    return NextResponse.json({ success: false, error: 'Failed to submit your enquiry. Please try again.' }, { status: 500 })
+  }
+
+  // ── 3. Send email notification (best-effort — enquiry is already saved) ─
   const smtpUser = process.env.SMTP_USER
   const smtpPass = process.env.SMTP_PASS
   const from = process.env.EMAIL_FROM
@@ -92,13 +106,17 @@ export async function POST(req: NextRequest) {
 
   if (!smtpUser || !smtpPass || !from || !to?.length) {
     console.error('[contact] Missing SMTP_USER, SMTP_PASS, EMAIL_FROM or EMAIL_TO environment variables')
-    return NextResponse.json({ success: false, error: 'Something went wrong on our end. Please email us directly.' }, { status: 500 })
+    return NextResponse.json({
+      success: true,
+      data: { id: enquiry.id },
+      warning: 'Your enquiry was received, but our notification email is temporarily unavailable. Our team will still see it.',
+    })
   }
 
   const safeFirstName = escapeHtml(firstName)
   const safeLastName = escapeHtml(lastName)
   const safeEmail = escapeHtml(email)
-  const safePhone = escapeHtml(phone)
+  const safePhone = escapeHtml(phone ?? '')
   const safeCompanySize = escapeHtml(companySize)
   const safeService = escapeHtml(service)
   const safeMessage = escapeHtml(message).replace(/\n/g, '<br/>')
@@ -157,9 +175,15 @@ export async function POST(req: NextRequest) {
       html,
     })
 
-    return NextResponse.json({ success: true })
+    // ── 4. Return success ──────────────────────────────────────────────
+    return NextResponse.json({ success: true, data: { id: enquiry.id } })
   } catch (error) {
-    console.error('[contact] SMTP send failed:', error)
-    return NextResponse.json({ success: false, error: 'Failed to send your message. Please email us directly.' }, { status: 502 })
+    // Enquiry is already safely stored — the email failure does not lose it.
+    console.error('[contact] SMTP send failed (enquiry was still saved):', error)
+    return NextResponse.json({
+      success: true,
+      data: { id: enquiry.id },
+      warning: 'Your enquiry was received, but we could not send the notification email. Our team can still see it on the dashboard.',
+    })
   }
 }

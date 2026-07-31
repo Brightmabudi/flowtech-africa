@@ -2,13 +2,15 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { Eye, EyeOff, AlertCircle } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [email,    setEmail]    = useState('')
-  const [password, setPassword] = useState('')
-  const [error,    setError]    = useState('')
-  const [loading,  setLoading]  = useState(false)
+  const [email,       setEmail]       = useState('')
+  const [password,    setPassword]    = useState('')
+  const [error,       setError]       = useState('')
+  const [loading,     setLoading]     = useState(false)
+  const [showPass,    setShowPass]    = useState(false)
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -52,8 +54,8 @@ export default function LoginPage() {
       <div style={{ width: '100%', maxWidth: 440, position: 'relative', zIndex: 1 }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <Image src="/logo.png" alt="FlowTech Africa" width={160} height={48}
-            style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)', height: 40, width: 'auto' }} />
+          <Image src="/logo-light.png" alt="FlowTech Africa" width={149} height={40}
+            style={{ objectFit: 'contain', height: 40, width: 'auto' }} />
         </div>
 
         {/* Card */}
@@ -83,6 +85,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
+                autoComplete="email"
                 placeholder="you@example.com"
                 style={{
                   width: '100%', boxSizing: 'border-box',
@@ -105,38 +108,53 @@ export default function LoginPage() {
               <label style={{ display: 'block', color: 'rgba(255,255,255,0.7)', fontSize: 13, fontWeight: 500, marginBottom: 8 }}>
                 Password
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                placeholder="••••••••"
-                style={{
-                  width: '100%', boxSizing: 'border-box',
-                  padding: '12px 16px',
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(91,53,213,0.3)',
-                  borderRadius: 10,
-                  color: '#ffffff',
-                  fontSize: 14,
-                  outline: 'none',
-                  transition: 'border-color .2s',
-                }}
-                onFocus={e  => (e.currentTarget.style.borderColor = '#5B35D5')}
-                onBlur={e   => (e.currentTarget.style.borderColor = 'rgba(91,53,213,0.3)')}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  style={{
+                    width: '100%', boxSizing: 'border-box',
+                    padding: '12px 44px 12px 16px',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(91,53,213,0.3)',
+                    borderRadius: 10,
+                    color: '#ffffff',
+                    fontSize: 14,
+                    outline: 'none',
+                    transition: 'border-color .2s',
+                  }}
+                  onFocus={e  => (e.currentTarget.style.borderColor = '#5B35D5')}
+                  onBlur={e   => (e.currentTarget.style.borderColor = 'rgba(91,53,213,0.3)')}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(v => !v)}
+                  aria-label={showPass ? 'Hide password' : 'Show password'}
+                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}
+                >
+                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
 
             {/* Error */}
             {error && (
-              <div style={{
+              <div role="alert" style={{
                 background: 'rgba(239,68,68,0.12)',
                 border: '1px solid rgba(239,68,68,0.3)',
                 borderRadius: 10,
                 padding: '12px 14px',
                 color: '#f87171',
                 fontSize: 13,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
               }}>
+                <AlertCircle size={15} style={{ flexShrink: 0 }} />
                 {error}
               </div>
             )}

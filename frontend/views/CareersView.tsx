@@ -92,7 +92,7 @@ function VacancyCard({ job }: { job: Vacancy }) {
           </Button>
         ) : (
           <Button
-            href={`mailto:${job.contactEmail}?subject=${encodeURIComponent(`Application: ${job.title}`)}`}
+            href={`/careers/${job.id}`}
             size="sm"
             icon={<ArrowUpRight size={14} />}
             iconPosition="right"

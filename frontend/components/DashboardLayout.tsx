@@ -1,16 +1,20 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
+  LayoutDashboard,
   Briefcase,
+  Users,
+  Mail,
   Menu,
   X,
   ChevronRight,
   Bell,
   Settings,
   LogOut,
+  Loader2,
   TrendingUp,
 } from 'lucide-react'
 
@@ -30,7 +34,10 @@ interface DashboardLayoutProps {
 // ── Navigation definition ─────────────────────────────────────────────────────
 
 const NAV_ITEMS: NavItem[] = [
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Enquiries', href: '/dashboard/enquiries', icon: Mail },
   { label: 'Job Vacancies', href: '/dashboard/vacancies', icon: Briefcase },
+  { label: 'Applications', href: '/dashboard/applications', icon: Users },
 ]
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -74,12 +81,23 @@ function SidebarNavItem({ item, active, onClick }: { item: NavItem; active: bool
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
 
   // Close sidebar on route change (mobile)
   useEffect(() => { setSidebarOpen(false) }, [pathname])
 
   const currentPage = NAV_ITEMS.find((n) => n.href === pathname)?.label ?? 'Dashboard'
+
+  async function handleLogout() {
+    setLoggingOut(true)
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } finally {
+      router.push('/login')
+    }
+  }
 
   // ── Sidebar content (shared between mobile overlay and desktop) ─────────────
   const SidebarContent = ({ onClose }: { onClose?: () => void }) => (
@@ -107,8 +125,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         )}
       </div>
 
-      {/* Navigation spacer */}
-      <div className="flex-1" />
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+        {NAV_ITEMS.map((item) => (
+          <SidebarNavItem key={item.href} item={item} active={pathname === item.href} onClick={onClose} />
+        ))}
+      </nav>
 
       {/* User footer */}
       <div className="border-t border-[rgba(15,23,42,0.06)] px-3 py-3 flex items-center gap-3">
@@ -127,10 +149,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <Settings className="w-3.5 h-3.5" />
           </button>
           <button
-            className="p-1.5 rounded-lg hover:bg-[rgba(255,92,58,0.08)] text-[#94A3B8] hover:text-[#FF5C3A] transition-colors"
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="p-1.5 rounded-lg hover:bg-[rgba(255,92,58,0.08)] text-[#94A3B8] hover:text-[#FF5C3A] transition-colors disabled:opacity-50"
             aria-label="Sign out"
           >
-            <LogOut className="w-3.5 h-3.5" />
+            {loggingOut ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <LogOut className="w-3.5 h-3.5" />}
           </button>
         </div>
       </div>

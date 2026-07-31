@@ -1,6 +1,3 @@
-// ── Billing domain types ──────────────────────────────────────────────────────
-// Imported by both the billing API route and the billing page.
-// Nothing here is a Next.js route export — safe for any consumer.
 
 export interface BillingLedgerEntry {
   id:            number

@@ -107,6 +107,7 @@ export default function PortalPage() {
   }, [])
 
   async function handleLogout() {
+    if (!window.confirm('Are you sure you want to sign out?')) return
     setLoggingOut(true)
     await fetch('/api/auth/logout', { method: 'POST' })
     router.push('/login')
@@ -128,8 +129,8 @@ export default function PortalPage() {
 
       {/* Top bar */}
       <header style={topStyle}>
-        <Image src="/logo.png" alt="FlowTech Africa" width={140} height={42}
-          style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)', height: 34, width: 'auto' }} />
+        <Image src="/logo-light.png" alt="FlowTech Africa" width={127} height={34}
+          style={{ objectFit: 'contain', height: 34, width: 'auto' }} />
         <button onClick={handleLogout} disabled={loggingOut}
           style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'rgba(255,255,255,0.7)', fontSize: 13, fontWeight: 500, padding: '8px 14px', cursor: loggingOut ? 'not-allowed' : 'pointer', transition: 'background .2s, color .2s' }}
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.1)'; (e.currentTarget as HTMLElement).style.color = '#fff' }}

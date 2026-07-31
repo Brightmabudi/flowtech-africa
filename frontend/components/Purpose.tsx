@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { Heart, Target, Flame, Star, CheckCircle, Users, Globe, Award, TrendingUp } from 'lucide-react'
+import { Heart, Target, Flame, Star, CheckCircle } from 'lucide-react'
 import { Container, Section } from '@frontend/components/ui/Container'
 import SectionHeader from '@frontend/components/ui/SectionHeader'
 import Card from '@frontend/components/ui/Card'
@@ -18,16 +18,9 @@ const COMMITMENTS = [
   'Putting your interests before our bottom line',
 ]
 
-const RIGHT_STATS = [
-  { icon: <Users size={20} />,      color: '#5B35D5', num: '100+', label: 'Systems Delivered',   sub: 'Across Africa and globally' },
-  { icon: <Globe size={20} />,      color: '#E8401A', num: '20+',  label: 'Years of Experience',  sub: 'Proven ICT expertise'       },
-  { icon: <Award size={20} />,      color: '#0EA5E9', num: 'L1',   label: 'B-BBEE Certified',     sub: 'Proudly South African'      },
-  { icon: <TrendingUp size={20} />, color: '#10B981', num: '0%',   label: 'Licensing Fees',       sub: 'No restrictive costs ever'  },
-]
-
 export default function Purpose() {
   return (
-    <Section>
+    <Section id="purpose">
       <Container>
 
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7 }} className="mb-16 lg:mb-20">
@@ -36,45 +29,22 @@ export default function Purpose() {
             <div aria-hidden="true" className="pointer-events-none absolute left-[20%] top-[10%] h-[240px] w-[240px] rounded-full bg-brand-600/15 blur-[80px]" />
             <div aria-hidden="true" className="pointer-events-none absolute bottom-[10%] right-[20%] h-[180px] w-[180px] rounded-full bg-accent-500/10 blur-[60px]" />
 
-            <div className="relative z-[1] grid grid-cols-1 lg:grid-cols-2">
-              <div className="border-b border-white/10 p-8 sm:p-12 lg:border-b-0 lg:border-r">
-                <span className="mb-4 inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-accent-400">
-                  Let Us Be Your Partners
-                </span>
-                <h2 className="mb-5 font-display text-[clamp(1.8rem,3vw,2.6rem)] font-bold leading-tight tracking-tight text-white">
-                  Let Us Be Your{' '}
-                  <span className="bg-gradient-to-r from-brand-400 to-accent-400 bg-clip-text text-transparent">Software Solution Partners</span>
-                </h2>
-                <p className="mb-7 text-[15px] leading-relaxed text-white/70">
-                  At FlowTech Africa, our purpose is to glorify God in everything we do. We believe nothing is possible without God&apos;s blessing. That is why we create an environment where our staff can use their God-given gifts and talents to provide innovative solutions that meet your needs.
-                </p>
-                <div className="flex flex-col gap-3.5">
-                  {COMMITMENTS.map(c => (
-                    <div key={c} className="flex items-center gap-3">
-                      <CheckCircle size={16} className="flex-shrink-0 text-emerald-400" aria-hidden="true" />
-                      <span className="text-sm font-medium text-white/85">{c}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col justify-center gap-3.5 p-8 sm:p-12">
-                <div className="mb-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/50">
-                  {'// Why choose us'}
-                </div>
-                {RIGHT_STATS.map(({ icon, color, num, label, sub }) => (
-                  <div
-                    key={label}
-                    className="flex items-center gap-4 rounded-control border border-white/10 bg-white/[0.06] p-4 backdrop-blur-xl transition-colors hover:border-brand-600/40 hover:bg-white/[0.1]"
-                  >
-                    <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-control" style={{ background: `${color}18`, border: `1px solid ${color}30`, color }} aria-hidden="true">
-                      {icon}
-                    </div>
-                    <div className="flex-1">
-                      <div className="bg-gradient-to-br from-brand-400 to-accent-400 bg-clip-text font-display text-2xl font-bold leading-none text-transparent">{num}</div>
-                      <div className="mt-0.5 font-display text-sm font-semibold text-white">{label}</div>
-                      <div className="mt-0.5 text-xs text-white/55">{sub}</div>
-                    </div>
+            <div className="relative z-[1] mx-auto max-w-[640px] p-8 text-center sm:p-14">
+              <span className="mb-4 inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-accent-400">
+                Let Us Be Your Partners
+              </span>
+              <h2 className="mb-5 font-display text-[clamp(1.8rem,3vw,2.6rem)] font-bold leading-tight tracking-tight text-white">
+                Let Us Be Your{' '}
+                <span className="bg-gradient-to-r from-brand-400 to-accent-400 bg-clip-text text-transparent">Software Solution Partners</span>
+              </h2>
+              <p className="mb-7 text-[15px] leading-relaxed text-white/70">
+                At FlowTech Africa, our purpose is to glorify God in everything we do. We believe nothing is possible without God&apos;s blessing. That is why we create an environment where our staff can use their God-given gifts and talents to provide innovative solutions that meet your needs.
+              </p>
+              <div className="mx-auto flex max-w-fit flex-col items-start gap-3.5">
+                {COMMITMENTS.map(c => (
+                  <div key={c} className="flex items-center gap-3">
+                    <CheckCircle size={16} className="flex-shrink-0 text-emerald-400" aria-hidden="true" />
+                    <span className="text-sm font-medium text-white/85">{c}</span>
                   </div>
                 ))}
               </div>

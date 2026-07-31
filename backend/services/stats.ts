@@ -1,48 +1,49 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@backend/services/db'
+import { requireAdmin } from '@backend/middleware/require-auth'
+
+// ── GET /api/dashboard/stats ──────────────────────────────────────────────────
+// Admin only. Summary counts for the dashboard's three KPI cards, sourced live
+// from ContactEnquiry / JobVacancy / JobApplication — nothing hard-coded.
 
 export async function GET() {
+  const authCheck = requireAdmin()
+  if (authCheck instanceof NextResponse) return authCheck
+
   try {
-    const [totalClients, requestStatusGroups, billingRows] = await Promise.all([
-      prisma.clientProfile.count(),
-      prisma.registrationRequest.groupBy({ by: ['status'], _count: { id: true } }),
-      prisma.billingRecord.findMany({ select: { amount: true, currency: true, invoiceStatus: true } }),
+    const [enquiryGroups, vacancyGroups, applicationGroups] = await Promise.all([
+      prisma.contactEnquiry.groupBy({ by: ['status'], _count: { id: true } }),
+      prisma.jobVacancy.groupBy({ by: ['status'], _count: { id: true } }),
+      prisma.jobApplication.groupBy({ by: ['status'], _count: { id: true } }),
     ])
 
-    const requestCounts: Record<string, number> = {}
-    for (const group of requestStatusGroups) requestCounts[group.status] = group._count.id
+    const enquiryCounts: Record<string, number> = {}
+    for (const g of enquiryGroups) enquiryCounts[g.status] = g._count.id
+    const enquiriesNew = enquiryCounts['NEW'] ?? 0
 
-    const totalRequests     = Object.values(requestCounts).reduce((s, n) => s + n, 0)
-    const pendingRequests   = requestCounts['Pending']      ?? 0
-    const reviewRequests    = requestCounts['Under Review'] ?? 0
-    const processedRequests = requestCounts['Processed']    ?? 0
-    const rejectedRequests  = requestCounts['Rejected']     ?? 0
+    const vacancyCounts: Record<string, number> = {}
+    for (const g of vacancyGroups) vacancyCounts[g.status] = g._count.id
 
-    let totalBillingCents = 0, paidCents = 0, outstandingCents = 0
-
-    for (const row of billingRows) {
-      totalBillingCents += row.amount
-      if (row.invoiceStatus === 'Paid')
-        paidCents += row.amount
-      else if (row.invoiceStatus === 'Issued' || row.invoiceStatus === 'Overdue')
-        outstandingCents += row.amount
-    }
+    const applicationCounts: Record<string, number> = {}
+    for (const g of applicationGroups) applicationCounts[g.status] = g._count.id
 
     return NextResponse.json({
       success: true,
       data: {
-        clients:  { total: totalClients },
-        requests: {
-          total: totalRequests, pending: pendingRequests,
-          underReview: reviewRequests, processed: processedRequests, rejected: rejectedRequests,
+        enquiries: {
+          total:  Object.values(enquiryCounts).reduce((s, n) => s + n, 0),
+          new:    enquiriesNew,
+          unread: enquiriesNew, // no separate read/unread flag exists — NEW status is the "unread" signal
         },
-        billing: {
-          totalCents: totalBillingCents, paidCents, outstandingCents,
-          totalDisplay:       (totalBillingCents / 100).toFixed(2),
-          paidDisplay:        (paidCents         / 100).toFixed(2),
-          outstandingDisplay: (outstandingCents   / 100).toFixed(2),
-          currency:    billingRows[0]?.currency ?? 'ZAR',
-          recordCount: billingRows.length,
+        vacancies: {
+          total:  Object.values(vacancyCounts).reduce((s, n) => s + n, 0),
+          active: vacancyCounts['ACTIVE'] ?? 0,
+          closed: vacancyCounts['CLOSED'] ?? 0,
+        },
+        applications: {
+          total:       Object.values(applicationCounts).reduce((s, n) => s + n, 0),
+          new:         applicationCounts['NEW'] ?? 0,
+          shortlisted: applicationCounts['SHORTLISTED'] ?? 0,
         },
       },
     })

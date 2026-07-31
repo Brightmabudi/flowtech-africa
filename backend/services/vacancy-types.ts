@@ -18,21 +18,26 @@ export const VALID_JOB_TYPES = [
   'Internship',
 ] as const
 
-export type ValidDepartment = (typeof VALID_DEPARTMENTS)[number]
-export type ValidJobType    = (typeof VALID_JOB_TYPES)[number]
+export const VALID_VACANCY_STATUSES = ['DRAFT', 'ACTIVE', 'CLOSED', 'ARCHIVED'] as const
+
+export type ValidDepartment    = (typeof VALID_DEPARTMENTS)[number]
+export type ValidJobType       = (typeof VALID_JOB_TYPES)[number]
+export type ValidVacancyStatus = (typeof VALID_VACANCY_STATUSES)[number]
 
 export interface Vacancy {
-  id:           number
-  title:        string
-  department:   string
-  location:     string
-  type:         string
-  description:  string
-  requirements: string[]   // parsed from newline-separated DB string
-  contactEmail: string
-  isActive:     boolean
-  closingDate:  string | null
-  createdAt:    string
+  id:               number
+  title:            string
+  department:       string
+  location:         string
+  type:             string
+  description:      string
+  requirements:     string[]   // parsed from newline-separated DB string
+  contactEmail:     string
+  isActive:         boolean
+  status:           string
+  applicationCount?: number
+  closingDate:      string | null
+  createdAt:        string
 }
 
 export interface VacancyPayload {

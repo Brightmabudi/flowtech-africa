@@ -102,8 +102,63 @@ model JobVacancy {
   requirements String
   contactEmail String
   isActive     Boolean   @default(true)
+  status       String    @default("ACTIVE") // "DRAFT" | "ACTIVE" | "CLOSED" | "ARCHIVED" — kept in sync with isActive
   closingDate  DateTime?
   createdAt    DateTime  @default(now())
+
+  applications JobApplication[]
+
+  @@index([status])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  JobApplication
+//  Public applications submitted against a JobVacancy. No candidate account
+//  required — applicants are identified by email within a single vacancy.
+//  status : "NEW" | "REVIEWED" | "SHORTLISTED" | "REJECTED" | "ARCHIVED"
+// ─────────────────────────────────────────────────────────────────────────────
+model JobApplication {
+  id           Int      @id @default(autoincrement())
+  vacancyId    Int
+  firstName    String
+  lastName     String
+  email        String
+  phone        String?
+  location     String?
+  coverLetter  String?
+  cvUrl        String
+  status       String   @default("NEW")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  vacancy JobVacancy @relation(fields: [vacancyId], references: [id], onDelete: Cascade)
+
+  @@unique([vacancyId, email])
+  @@index([status])
+  @@index([vacancyId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  ContactEnquiry
+//  Submissions from the public contact form. Persisted independently of the
+//  email notification, so a submission is never lost if SMTP fails.
+//  status : "NEW" | "READ" | "RESPONDED" | "ARCHIVED"
+// ─────────────────────────────────────────────────────────────────────────────
+model ContactEnquiry {
+  id              Int      @id @default(autoincrement())
+  firstName       String
+  lastName        String
+  email           String
+  phone           String?
+  companySize     String
+  serviceInterest String
+  message         String
+  status          String   @default("NEW")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 'use client'
 import { useId, useState } from 'react'
 import { motion } from 'framer-motion'
-import { MapPin, Phone, Mail, Clock, Award } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock } from 'lucide-react'
 import { Container, Section } from '@frontend/components/ui/Container'
 import SectionHeader from '@frontend/components/ui/SectionHeader'
 import Button from '@frontend/components/ui/Button'
@@ -56,12 +56,6 @@ export default function Contact() {
           eyebrow="Get In Touch"
           title={<>Let us Build Something{' '}<span className="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">Extraordinary</span></>}
         />
-        <div className="-mt-8 mb-12 inline-flex items-center gap-2.5 rounded-control border border-brand-600/15 bg-brand-600/[0.08] px-[18px] py-2.5">
-          <Award size={16} className="flex-shrink-0 text-brand-600" aria-hidden="true" />
-          <p className="text-sm font-semibold leading-relaxed text-brand-800">
-            FlowTech Africa is a proudly South African company with over 20 years in the ICT Industry.
-          </p>
-        </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-14">
 

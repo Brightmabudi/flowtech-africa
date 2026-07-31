@@ -31,26 +31,36 @@ function validate(body: Partial<VacancyNewBody>): Record<string, string> {
 
 function toVacancy(row: {
   id: number; title: string; department: string; location: string; type: string
-  description: string; requirements: string; contactEmail: string; isActive: boolean
-  closingDate: Date | null; createdAt: Date
+  description: string; requirements: string; contactEmail: string; isActive: boolean; status: string
+  closingDate: Date | null; createdAt: Date; _count?: { applications: number }
 }): Vacancy {
   return {
     id: row.id, title: row.title, department: row.department, location: row.location,
     type: row.type, description: row.description,
     requirements: row.requirements.split('\n').map((r) => r.trim()).filter(Boolean),
-    contactEmail: row.contactEmail, isActive: row.isActive,
+    contactEmail: row.contactEmail, isActive: row.isActive, status: row.status,
+    applicationCount: row._count?.applications,
     closingDate: row.closingDate ? row.closingDate.toISOString() : null,
     createdAt: row.createdAt.toISOString(),
   }
 }
 
 export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const showAll = searchParams.get('all') === '1'
+
+  // The public careers listing (default, no ?all=1) stays unauthenticated.
+  // ?all=1 exposes DRAFT/CLOSED/ARCHIVED vacancies too — admin only.
+  if (showAll) {
+    const authCheck = requireAdmin()
+    if (authCheck instanceof NextResponse) return authCheck
+  }
+
   try {
-    const { searchParams } = new URL(req.url)
-    const showAll = searchParams.get('all') === '1'
-    const rows    = await prisma.jobVacancy.findMany({
+    const rows = await prisma.jobVacancy.findMany({
       where:   showAll ? {} : { isActive: true },
       orderBy: { createdAt: 'desc' },
+      include: { _count: { select: { applications: true } } },
     })
     const vacancies = rows.map(toVacancy)
     const payload: VacancyPayload = { vacancies, total: vacancies.length }
@@ -62,6 +72,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const authCheck = requireAdmin()
+  if (authCheck instanceof NextResponse) return authCheck
+
   try {
     const body: Partial<VacancyNewBody> = await req.json()
     const errors = validate(body)

@@ -11,7 +11,7 @@ import { cn } from '@frontend/lib/cn'
 
 const LINKS = [
   { label: 'Solutions', href: '#solutions' },
-  { label: 'Services',  href: '#services'  },
+  { label: 'Services',  href: '/services'  },
   { label: 'About',     href: '#about'     },
   { label: 'Careers',   href: '/careers'   },
   { label: 'Contact',   href: '#contact'   },
@@ -55,7 +55,7 @@ export default function Navbar() {
             aria-label={pathname === '/' ? 'FlowTech Africa — Back to top' : 'FlowTech Africa — Back to homepage'}
             className="flex items-center rounded-control focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
           >
-            <Image src="/logo.png" alt="FlowTech Africa" width={160} height={43} className="h-[38px] w-auto object-contain" priority />
+            <Image src="/logo.png" alt="FlowTech Africa" width={142} height={38} className="h-[38px] w-auto object-contain" priority />
           </a>
 
           <ul className="hidden list-none items-center gap-9 lg:flex">
