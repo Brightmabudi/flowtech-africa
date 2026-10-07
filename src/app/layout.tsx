@@ -9,7 +9,7 @@ const instrumentSans = Instrument_Sans({ subsets: ['latin'], weight: ['400','500
 const jetbrainsMono  = JetBrains_Mono({ subsets: ['latin'], weight: ['400','500'], variable: '--font-jetbrains-mono' })
 
 export const metadata: Metadata = {
-  title:       'FlowTech Africa - Powering Africa Digital Future',
+  title:       'FlowTech Africa - Your Business Solutions Partner',
   description: 'Enterprise cloud, cybersecurity, managed IT services, and network connectivity across 14 African countries. ISO 27001 certified. 500+ clients.',
   keywords:    'ICT South Africa, managed IT services Africa, cloud Africa, cybersecurity Africa, FlowTech',
 }

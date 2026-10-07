@@ -10,6 +10,8 @@ const BULLETS = [
   'Own cutting-edge Digital Business Systems with no licensing fees',
   'Trusted Partner to leading software OEMs globally',
   'Secure global delivery platform for advanced digital technologies',
+  'Truly custom solutions built around your exact needs, integrated with your existing tools',
+  'Local expertise backed by partnerships with global leaders',
   'Client-first approach — we understand your business before building',
 ]
 
@@ -66,8 +68,8 @@ export default function About() {
             <motion.div initial={{ opacity: 0, x: 32 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.65, delay: 0.1 }}>
               <div className="relative mb-4 overflow-hidden rounded-panel shadow-brand-lg">
                 <Image
-                  src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80&auto=format"
-                  alt="Data centre"
+                  src="/images/workplace.webp"
+                  alt="FlowTech Africa engineer working with cloud and digital tools"
                   width={800}
                   height={280}
                   sizes="(min-width: 1024px) 50vw, 100vw"

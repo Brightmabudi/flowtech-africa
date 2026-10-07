@@ -7,8 +7,8 @@ import SectionHeader from '@frontend/components/ui/SectionHeader'
 import Button from '@frontend/components/ui/Button'
 
 const INFO = [
-  { icon: <MapPin size={15} />, title: 'HEAD OFFICE', body: 'Unit 3, Boardwalk office park\n107 Boardwalk Blvd, Faerie Glen, Pretoria, 0034' },
-  { icon: <Phone size={15} />,  title: 'PHONE',        body: '012 881 1930' },
+  { icon: <MapPin size={15} />, title: 'HEAD OFFICE', body: 'Boardwalk Lakeside Suites, Phase 02, Block G, Suite G01\n107 Haymeadow Street, Faerie Glen, 0043' },
+  { icon: <Phone size={15} />,  title: 'PHONE',        body: '012 881 1930 | 086 568 8474' },
   { icon: <Mail size={15} />,   title: 'EMAIL',        body: 'michellef@flowtech.africa' },
   { icon: <Clock size={15} />,  title: 'SUPPORT',      body: '24/7 NOC & Helpdesk\nRound-the-clock human support' },
 ]
@@ -79,7 +79,7 @@ export default function Contact() {
             <div className="mt-5 overflow-hidden rounded-card border border-brand-600/15 shadow-brand-sm">
               <iframe
                 title="FlowTech Africa office location"
-                src="https://maps.google.com/maps?q=Unit+3+Boardwalk+Office+Park+107+Boardwalk+Blvd+Faerie+Glen+Pretoria+0034+South+Africa&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                src="https://maps.google.com/maps?q=Boardwalk+Lakeside+Suites+107+Haymeadow+Street+Faerie+Glen+0043+South+Africa&t=&z=16&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="220"
                 className="block border-0"
@@ -87,14 +87,14 @@ export default function Contact() {
                 referrerPolicy="no-referrer-when-downgrade"
               />
               <a
-                href="https://maps.google.com/maps?q=Unit+3+Boardwalk+Office+Park+107+Boardwalk+Blvd+Faerie+Glen+Pretoria+0034+South+Africa"
+                href="https://maps.google.com/maps?q=Boardwalk+Lakeside+Suites+107+Haymeadow+Street+Faerie+Glen+0043+South+Africa"
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-2 border-t border-brand-600/10 bg-white px-4 py-2.5 transition-colors hover:bg-brand-600/[0.04] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
               >
                 <MapPin size={14} className="flex-shrink-0 text-brand-600" aria-hidden="true" />
                 <span className="text-xs font-semibold text-brand-600">Get Directions</span>
-                <span className="ml-auto text-[11px] text-ink-400">Unit 3, Boardwalk office park · Faerie Glen, Pretoria</span>
+                <span className="ml-auto text-[11px] text-ink-400">Boardwalk Lakeside Suites · Faerie Glen, Pretoria</span>
               </a>
             </div>
           </motion.div>

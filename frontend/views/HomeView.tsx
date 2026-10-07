@@ -1,4 +1,5 @@
 import Hero            from '@frontend/components/Hero'
+import Differentiators from '@frontend/components/Differentiators'
 import Stats            from '@frontend/components/Stats'
 import About            from '@frontend/components/About'
 import Services         from '@frontend/components/Services'
@@ -7,6 +8,8 @@ import Solutions        from '@frontend/components/Solutions'
 import HowWeWork        from '@frontend/components/HowWeWork'
 import Industries       from '@frontend/components/Industries'
 import Purpose          from '@frontend/components/Purpose'
+import Offerings       from '@frontend/components/Offerings'
+import CEOStatement     from '@frontend/components/CEOStatement'
 import WhyChooseUs      from '@frontend/components/WhyChooseUs'
 import FeaturedProjects from '@frontend/components/FeaturedProjects'
 import Testimonials     from '@frontend/components/Testimonials'
@@ -19,10 +22,13 @@ export default function Home() {
   return (
     <main>
       <Hero />
+      <Differentiators />
       <Stats />
       <About />
       <Services />
+      <Offerings />
       <WhyChooseUs />
+      <CEOStatement />
       <TechStack />
       <Solutions />
       <HowWeWork />
