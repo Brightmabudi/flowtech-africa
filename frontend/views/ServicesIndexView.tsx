@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft, ArrowRight,
@@ -19,7 +20,7 @@ export default function ServicesIndexView() {
   return (
     <main className="min-h-screen bg-white">
       <Section className="!pb-10 !pt-28 sm:!pt-32">
-        <Container className="max-w-3xl">
+        <Container>
           <Link
             href="/"
             className="mb-8 inline-flex items-center gap-2 rounded-control text-[13px] text-ink-400 transition-colors hover:text-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
@@ -27,15 +28,23 @@ export default function ServicesIndexView() {
             <ArrowLeft size={16} aria-hidden="true" />
             Back to FlowTech Africa
           </Link>
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center">
-            <span className="mb-4 inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-accent-600">Our Services</span>
-            <h1 className="mb-5 font-display text-[clamp(2.2rem,5vw,3.5rem)] font-bold leading-[1.08] tracking-tight text-ink-950">
-              Enterprise ICT, End to End
-            </h1>
-            <p className="mx-auto max-w-xl text-base leading-relaxed text-ink-500 sm:text-lg">
-              Nine core service areas covering every dimension of modern ICT — delivered with local expertise and global standards.
-            </p>
-          </motion.div>
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+              <span className="mb-4 inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-accent-600">Our Services</span>
+              <h1 className="mb-5 font-display text-[clamp(2.2rem,5vw,3.5rem)] font-bold leading-[1.08] tracking-tight text-ink-950">
+                Enterprise ICT, <span className="text-brand-600">end to end.</span>
+              </h1>
+              <p className="max-w-xl text-base leading-relaxed text-ink-500 sm:text-lg">
+                End-to-end digital solutions designed to optimise operations and deliver impactful outcomes, with local expertise and global standards.
+              </p>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="relative mx-auto w-full max-w-[560px]">
+              <div className="overflow-hidden rounded-[28px] rounded-tl-[100px] shadow-brand-lg">
+                <Image src="/images/workplace.webp" alt="" width={852} height={568} sizes="(min-width: 1024px) 560px, 100vw" priority className="h-[260px] w-full object-cover sm:h-[320px]" />
+              </div>
+              <Image src="/images/network.webp" alt="" aria-hidden="true" width={640} height={543} sizes="150px" className="absolute -bottom-6 -right-3 w-[130px] animate-[floatBadge_5s_ease-in-out_infinite] drop-shadow-[0_20px_30px_rgba(0,0,0,.3)]" />
+            </motion.div>
+          </div>
         </Container>
       </Section>
 

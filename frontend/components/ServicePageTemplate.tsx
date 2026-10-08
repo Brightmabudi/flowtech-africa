@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft, ArrowRight, ArrowUpRight, CheckCircle2,
@@ -19,6 +20,15 @@ const ICONS: Record<string, LucideIcon> = {
   Code, Sparkles, Cloud, Shield, Settings, Network, Boxes, BarChart3, Lightbulb,
 }
 
+// Brochure illustrations for the services that have a matching one
+const HERO_ART: Record<string, string> = {
+  'ai-solutions':     '/images/ai-chip.webp',
+  'data-analytics':   '/images/ai-chip.webp',
+  'cloud-computing':  '/images/cloud.webp',
+  'networking':       '/images/network.webp',
+  'managed-it-services': '/images/network.webp',
+}
+
 export default function ServicePageTemplate({ service }: { service: ServiceDefinition }) {
   const Icon = ICONS[service.icon] ?? Code
 
@@ -26,45 +36,52 @@ export default function ServicePageTemplate({ service }: { service: ServiceDefin
     <main className="min-h-screen bg-white">
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#08050F] via-[#11091E] to-[#1A0A38] px-6 pb-20 pt-28 text-center sm:px-16 sm:pt-32">
+      <section className="relative overflow-hidden bg-white px-6 pb-16 pt-28 sm:px-10 sm:pt-32 lg:px-24">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{ background: `radial-gradient(ellipse 90% 70% at 50% -10%, ${service.color}40 0%, transparent 60%)` }}
+          className="pointer-events-none absolute -right-40 -top-40 h-[560px] w-[560px] rounded-full blur-3xl"
+          style={{ background: `${service.color}22` }}
         />
-        <Container className="relative z-[1] max-w-3xl">
-          <Link
-            href="/services"
-            className="mb-8 inline-flex items-center gap-2 rounded-control text-[13px] text-white/50 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
-          >
-            <ArrowLeft size={16} aria-hidden="true" />
-            All Services
-          </Link>
+        <Container className="relative z-[1] grid items-center gap-10 lg:grid-cols-[1fr_1fr]">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <nav aria-label="Breadcrumb" className="mb-8 flex items-center gap-2 text-[13px] text-ink-400">
+              <Link href="/" className="hover:text-brand-600">Home</Link>
+              <span aria-hidden="true">/</span>
+              <Link href="/services" className="hover:text-brand-600">Services</Link>
+              <span aria-hidden="true">/</span>
+              <span className="text-ink-700">{service.navTitle}</span>
+            </nav>
             <div
-              className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-control backdrop-blur-md"
-              style={{ background: `${service.color}20`, border: `1px solid ${service.color}40`, color: service.color }}
+              className="mb-6 flex h-14 w-14 items-center justify-center rounded-control"
+              style={{ background: `${service.color}15`, border: `1px solid ${service.color}30`, color: service.color }}
               aria-hidden="true"
             >
               <Icon size={26} />
             </div>
-            <span className="mb-4 inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.16em]" style={{ color: service.color }}>
-              Services
-            </span>
-            <h1 className="mb-5 font-display text-[clamp(2.2rem,5vw,3.5rem)] font-bold leading-[1.08] tracking-tight text-white">
+            <h1 className="mb-5 font-display text-[clamp(2.2rem,5vw,3.5rem)] font-bold leading-[1.08] tracking-tight text-ink-950">
               {service.title}
             </h1>
-            <p className="mx-auto mb-9 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg">
+            <p className="mb-9 max-w-xl text-base leading-relaxed text-ink-500 sm:text-lg">
               {service.tagline}
             </p>
-            <div className="flex flex-wrap justify-center gap-3.5">
+            <div className="flex flex-wrap gap-3.5">
               <Button href="/#contact" size="lg" icon={<ArrowRight size={16} />} iconPosition="right">
-                Talk to an Expert
+                Request a Consultation
               </Button>
-              <Button href="#overview" variant="secondary" size="lg">
+              <Button href="#overview" variant="ghost" size="lg">
                 Explore the Service
               </Button>
             </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="relative mx-auto w-full max-w-[560px]">
+            <div className="overflow-hidden rounded-[28px] rounded-tl-[100px] shadow-brand-lg">
+              <Image src="/images/workplace.webp" alt="" width={852} height={568} sizes="(min-width: 1024px) 560px, 100vw" priority className="h-[280px] w-full object-cover sm:h-[360px]" />
+              <div className="absolute inset-0 rounded-[28px] rounded-tl-[100px]" style={{ background: `linear-gradient(135deg, ${service.color}30, transparent 60%)` }} />
+            </div>
+            {HERO_ART[service.slug] && (
+              <Image src={HERO_ART[service.slug]} alt="" aria-hidden="true" width={640} height={640} sizes="170px" className="absolute -bottom-8 -right-3 w-[150px] animate-[floatBadge_5s_ease-in-out_infinite] drop-shadow-[0_20px_30px_rgba(0,0,0,.3)] sm:w-[170px]" />
+            )}
           </motion.div>
         </Container>
       </section>

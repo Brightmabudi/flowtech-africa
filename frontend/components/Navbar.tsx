@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { ArrowRight, Menu, X } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Container } from '@frontend/components/ui/Container'
@@ -68,8 +68,7 @@ export default function Navbar() {
           </ul>
 
           <div className="hidden items-center gap-3 lg:flex">
-            <NavLink href={isHome ? '#contact' : '/#contact'} className="text-ink-500">Talk to us</NavLink>
-            <Button href={isHome ? '#contact' : '/#contact'} size="sm">Get Started</Button>
+            <Button href={isHome ? '#contact' : '/#contact'} size="sm" icon={<ArrowRight size={14} />} iconPosition="right">Contact Us</Button>
           </div>
 
           <button
@@ -105,7 +104,7 @@ export default function Navbar() {
                   {l.label}
                 </NavLink>
               ))}
-              <Button href={isHome ? '#contact' : '/#contact'} onClick={() => setMobileOpen(false)} className="mt-3 w-full">Get Started</Button>
+              <Button href={isHome ? '#contact' : '/#contact'} onClick={() => setMobileOpen(false)} className="mt-3 w-full">Contact Us</Button>
             </div>
           </motion.div>
         )}

@@ -54,14 +54,14 @@ export default function Contact() {
       <Container>
         <SectionHeader
           eyebrow="Get In Touch"
-          title={<>Let us Build Something{' '}<span className="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">Extraordinary</span></>}
+          title={<>Let&apos;s{' '}<span className="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">Connect</span></>}
         />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-14">
 
           <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6 }}>
             <p className="mb-7 text-[15px] leading-relaxed text-ink-500">
-              Whether you need a quick quote, a full solution design, or just want to understand what is possible for your organisation — our team is here.
+              We're here to help you build what's next. Request a quote, a full solution design, or a half-day Discovery Workshop to map your needs.
             </p>
             <div className="flex flex-col gap-3.5">
               {INFO.map(({ icon, title, body }) => (
