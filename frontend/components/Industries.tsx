@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { Mountain, Landmark, ShoppingBag, Building2, HeartPulse, Radio, Factory, Zap } from 'lucide-react'
+import { ArrowRight, Mountain, Landmark, ShoppingBag, Building2, HeartPulse, Radio, Factory, Zap } from 'lucide-react'
 import { Container, Section } from '@frontend/components/ui/Container'
 import SectionHeader from '@frontend/components/ui/SectionHeader'
 import Card from '@frontend/components/ui/Card'
@@ -46,6 +46,13 @@ export default function Industries() {
               </Card>
             </motion.div>
           ))}
+        </div>
+
+        <div className="mt-10 flex flex-col items-start justify-between gap-5 rounded-panel bg-gradient-to-r from-[#08050F] via-brand-900 to-[#1A0A38] px-7 py-7 sm:flex-row sm:items-center sm:px-10">
+          <p className="font-display text-lg font-bold text-white sm:text-xl">Solutions built for Africa. Impact delivered globally.</p>
+          <a href="/#contact" className="inline-flex items-center gap-2 rounded-control border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-white/20">
+            Contact Us <ArrowRight size={14} aria-hidden="true" />
+          </a>
         </div>
       </Container>
     </Section>

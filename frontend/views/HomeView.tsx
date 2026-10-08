@@ -1,6 +1,5 @@
 import Hero            from '@frontend/components/Hero'
 import Differentiators from '@frontend/components/Differentiators'
-import Stats            from '@frontend/components/Stats'
 import About            from '@frontend/components/About'
 import Services         from '@frontend/components/Services'
 import TechStack        from '@frontend/components/TechStack'
@@ -23,7 +22,6 @@ export default function Home() {
     <main>
       <Hero />
       <Differentiators />
-      <Stats />
       <About />
       <Services />
       <Offerings />
