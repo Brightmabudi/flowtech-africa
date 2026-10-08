@@ -28,10 +28,9 @@ interface FormState {
   phone:     string
   location:  string
   coverLetter: string
-  cvUrl:     string
 }
 
-const EMPTY_FORM: FormState = { firstName: '', lastName: '', email: '', phone: '', location: '', coverLetter: '', cvUrl: '' }
+const EMPTY_FORM: FormState = { firstName: '', lastName: '', email: '', phone: '', location: '', coverLetter: '' }
 
 export default function VacancyDetailView({ id }: { id: string }) {
   const [vacancy, setVacancy] = useState<Vacancy | null>(null)
@@ -40,6 +39,7 @@ export default function VacancyDetailView({ id }: { id: string }) {
   const [error, setError] = useState<string | null>(null)
 
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
+  const [cvFile, setCvFile] = useState<File | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
@@ -69,11 +69,14 @@ export default function VacancyDetailView({ id }: { id: string }) {
     setSubmitError(null)
     setSubmitting(true)
     try {
-      const res = await fetch(`/api/vacancies/${id}/apply`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, website: '', renderedAt: renderedAtRef.current }),
-      })
+      if (!cvFile) throw new Error('Please upload your CV/resume.')
+      if (cvFile.size > 4 * 1024 * 1024) throw new Error('Your CV is too large (max 4MB).')
+      const data = new FormData()
+      Object.entries(form).forEach(([k, v]) => data.append(k, v))
+      data.append('cv', cvFile)
+      data.append('website', '')
+      data.append('renderedAt', String(renderedAtRef.current))
+      const res = await fetch(`/api/vacancies/${id}/apply`, { method: 'POST', body: data })
       const body = await res.json()
       if (!body.success) throw new Error(body.error ?? 'Failed to submit your application.')
       setSubmitted(true)
@@ -82,7 +85,7 @@ export default function VacancyDetailView({ id }: { id: string }) {
     } finally {
       setSubmitting(false)
     }
-  }, [id, form])
+  }, [id, form, cvFile])
 
   const isExpired = vacancy?.closingDate ? new Date(vacancy.closingDate) < new Date() : false
 
@@ -201,10 +204,11 @@ export default function VacancyDetailView({ id }: { id: string }) {
                         className="w-full rounded-control border border-ink-950/15 px-3.5 py-2.5 text-sm text-ink-950 outline-none focus:border-brand-600" />
                     </div>
                     <div>
-                      <label htmlFor="cvUrl" className="mb-1.5 block text-[13px] font-semibold text-ink-700">CV / resume link</label>
-                      <input id="cvUrl" type="url" required placeholder="https://drive.google.com/..." value={form.cvUrl} onChange={handleChange('cvUrl')}
-                        className="w-full rounded-control border border-ink-950/15 px-3.5 py-2.5 text-sm text-ink-950 outline-none focus:border-brand-600" />
-                      <p className="mt-1 text-xs text-ink-400">Link to your CV on Drive, Dropbox, LinkedIn, etc.</p>
+                      <label htmlFor="cv" className="mb-1.5 block text-[13px] font-semibold text-ink-700">Upload your CV / resume</label>
+                      <input id="cv" type="file" required accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        onChange={(e) => setCvFile(e.target.files?.[0] ?? null)}
+                        className="w-full rounded-control border border-dashed border-brand-600/30 bg-ink-50 px-3.5 py-3 text-sm text-ink-700 outline-none file:mr-4 file:cursor-pointer file:rounded-control file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-[13px] file:font-semibold file:text-white hover:border-brand-600 focus:border-brand-600" />
+                      <p className="mt-1 text-xs text-ink-400">{cvFile ? `${cvFile.name} (${(cvFile.size / 1024).toFixed(0)} KB)` : 'PDF, DOC or DOCX, up to 4MB.'}</p>
                     </div>
                     <div>
                       <label htmlFor="coverLetter" className="mb-1.5 block text-[13px] font-semibold text-ink-700">Cover letter <span className="font-normal text-ink-400">(optional)</span></label>

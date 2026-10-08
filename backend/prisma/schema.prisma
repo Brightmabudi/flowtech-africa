@@ -131,11 +131,29 @@ model JobApplication {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  vacancy JobVacancy @relation(fields: [vacancyId], references: [id], onDelete: Cascade)
+  vacancy JobVacancy    @relation(fields: [vacancyId], references: [id], onDelete: Cascade)
+  cvFile  ApplicationCv?
 
   @@unique([vacancyId, email])
   @@index([status])
   @@index([vacancyId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  ApplicationCv
+//  CV file uploaded by a candidate. Kept in its own table so list queries on
+//  JobApplication never load the file bytes. JobApplication.cvUrl points at
+//  the admin-only download route for the file.
+// ─────────────────────────────────────────────────────────────────────────────
+model ApplicationCv {
+  id            Int      @id @default(autoincrement())
+  applicationId Int      @unique
+  fileName      String
+  mimeType      String
+  data          Bytes
+  createdAt     DateTime @default(now())
+
+  application JobApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

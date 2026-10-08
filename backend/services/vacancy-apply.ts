@@ -6,9 +6,27 @@ import type { ApplyBody } from '@backend/services/application-types'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MIN_FILL_TIME_MS = 2500
 
-type ApplyRequestBody = Partial<ApplyBody> & {
+type ApplyRequestBody = Partial<Omit<ApplyBody, 'cvUrl'>> & {
   website?:    string // honeypot
   renderedAt?: number // time-trap
+}
+
+// Vercel serverless request bodies are capped at ~4.5MB, so stay under that.
+const MAX_CV_BYTES = 4 * 1024 * 1024
+const CV_TYPES: Record<string, { mime: string; magic: number[] }> = {
+  pdf:  { mime: 'application/pdf', magic: [0x25, 0x50, 0x44, 0x46] },
+  docx: { mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', magic: [0x50, 0x4b, 0x03, 0x04] },
+  doc:  { mime: 'application/msword', magic: [0xd0, 0xcf, 0x11, 0xe0] },
+}
+
+function validateCv(file: File | null, bytes: Buffer | null): string | null {
+  if (!file || !bytes || file.size === 0) return 'Please upload your CV/resume.'
+  if (file.size > MAX_CV_BYTES) return 'Your CV is too large (max 4MB).'
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
+  const type = CV_TYPES[ext]
+  if (!type) return 'Please upload your CV as a PDF, DOC or DOCX file.'
+  if (!type.magic.every((b, i) => bytes[i] === b)) return 'That file does not look like a valid ' + ext.toUpperCase() + ' document.'
+  return null
 }
 
 function escapeHtml(value: string): string {
@@ -20,30 +38,18 @@ function escapeHtml(value: string): string {
     .replace(/'/g, '&#39;')
 }
 
-function isValidCvUrl(value: string): boolean {
-  try {
-    const url = new URL(value)
-    return url.protocol === 'http:' || url.protocol === 'https:'
-  } catch {
-    return false
-  }
-}
-
 function validate(body: ApplyRequestBody): string | null {
   const firstName = body.firstName?.trim() ?? ''
   const lastName  = body.lastName?.trim() ?? ''
   const email     = body.email?.trim() ?? ''
   const phone     = body.phone?.trim() ?? ''
   const location  = body.location?.trim() ?? ''
-  const cvUrl     = body.cvUrl?.trim() ?? ''
 
   if (!firstName || firstName.length > 80) return 'Please enter a valid first name.'
   if (!lastName || lastName.length > 80) return 'Please enter a valid last name.'
   if (!email || email.length > 254 || !EMAIL_RE.test(email)) return 'Please enter a valid email address.'
   if (phone && phone.length > 30) return 'Please enter a valid phone number.'
   if (location && location.length > 120) return 'Please enter a valid location.'
-  if (!cvUrl) return 'Please provide a link to your CV/resume.'
-  if (cvUrl.length > 2048 || !isValidCvUrl(cvUrl)) return 'Please provide a valid CV link (starting with http:// or https://).'
   if (body.coverLetter && body.coverLetter.length > 5000) return 'Cover letter is too long (max 5000 characters).'
 
   return null
@@ -60,8 +66,17 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 
   let body: ApplyRequestBody
+  let cvFile: File | null = null
   try {
-    body = await req.json()
+    const form = await req.formData()
+    const text = (k: string) => { const v = form.get(k); return typeof v === 'string' ? v : undefined }
+    body = {
+      firstName: text('firstName'), lastName: text('lastName'), email: text('email'),
+      phone: text('phone'), location: text('location'), coverLetter: text('coverLetter'),
+      website: text('website'), renderedAt: Number(text('renderedAt')) || undefined,
+    }
+    const f = form.get('cv')
+    cvFile = f instanceof File ? f : null
   } catch {
     return NextResponse.json({ success: false, error: 'Invalid request body.' }, { status: 400 })
   }
@@ -76,7 +91,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ success: true })
   }
 
-  const validationError = validate(body)
+  const cvBytes = cvFile ? Buffer.from(await cvFile.arrayBuffer()) : null
+  const validationError = validate(body) ?? validateCv(cvFile, cvBytes)
   if (validationError) {
     return NextResponse.json({ success: false, error: validationError }, { status: 400 })
   }
@@ -92,7 +108,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const phone     = body.phone?.trim() || null
   const location  = body.location?.trim() || null
   const coverLetter = body.coverLetter?.trim() || null
-  const cvUrl     = body.cvUrl!.trim()
 
   const existing = await prisma.jobApplication.findUnique({
     where: { vacancyId_email: { vacancyId, email } },
@@ -104,9 +119,18 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   let application
   try {
-    application = await prisma.jobApplication.create({
-      data: { vacancyId, firstName, lastName, email, phone, location, coverLetter, cvUrl },
-      // status is intentionally omitted — always uses the schema default ("NEW")
+    application = await prisma.$transaction(async (tx) => {
+      const created = await tx.jobApplication.create({
+        data: { vacancyId, firstName, lastName, email, phone, location, coverLetter, cvUrl: '' },
+        // status is intentionally omitted — always uses the schema default ("NEW")
+      })
+      await tx.applicationCv.create({
+        data: { applicationId: created.id, fileName: cvFile!.name.slice(0, 200), mimeType: CV_TYPES[cvFile!.name.split('.').pop()!.toLowerCase()].mime, data: cvBytes! },
+      })
+      return tx.jobApplication.update({
+        where: { id: created.id },
+        data: { cvUrl: `/api/dashboard/applications/${created.id}/cv` },
+      })
     })
   } catch (error: unknown) {
     // Defense-in-depth: DB-level unique constraint catches a race between the check above and this insert.
@@ -135,6 +159,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         from: `"FlowTech Africa Careers" <${from}>`,
         to,
         replyTo: email,
+        attachments: [{ filename: cvFile!.name, content: cvBytes! }],
         subject: `New Application: ${vacancy.title} - ${firstName} ${lastName}`,
         html: '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">'
           + `<h2 style="color:#2D1580">New application for ${escapeHtml(vacancy.title)}</h2>`
@@ -142,7 +167,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
           + `<p><strong>Email:</strong> ${escapeHtml(email)}</p>`
           + (phone ? `<p><strong>Phone:</strong> ${escapeHtml(phone)}</p>` : '')
           + (location ? `<p><strong>Location:</strong> ${escapeHtml(location)}</p>` : '')
-          + `<p><strong>CV:</strong> <a href="${escapeHtml(cvUrl)}">${escapeHtml(cvUrl)}</a></p>`
+          + `<p><strong>CV:</strong> attached (${escapeHtml(cvFile!.name)})</p>`
           + (coverLetter ? `<p><strong>Cover letter:</strong><br/>${escapeHtml(coverLetter).replace(/\n/g, '<br/>')}</p>` : '')
           + '</div>',
       })
