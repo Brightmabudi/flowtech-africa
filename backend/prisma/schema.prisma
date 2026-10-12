@@ -1,10 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 //  Prisma Schema — FlowTech Africa
-//  Provider : SQLite  (file-based, dev/local)
+//  Provider : PostgreSQL (Neon in dev/production)
 //  Purpose  : Automated client intake flow
 //
-//  Note: SQLite does not support native enums.
-//  Status/type fields use String with documented valid values.
+//  Status/type fields use String with documented valid values rather than
+//  native enums.
 // ─────────────────────────────────────────────────────────────────────────────
 
 generator client {
