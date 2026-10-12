@@ -26,7 +26,7 @@ export default function Differentiators() {
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-6 md:grid-rows-[auto_auto]">
           {/* Hero tile: licence-free */}
-          <motion.div {...reveal(0)} className={`${tile} md:col-span-4 border-white/10 bg-gradient-to-br from-[#08050F] via-[#11091E] to-brand-800 text-white`}>
+          <motion.div {...reveal(0)} className={`${tile} md:col-span-4 border-white/10 bg-gradient-to-br from-[#2D1580] via-[#3A22A0] to-brand-600 text-white`}>
             <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full bg-brand-600/40 blur-[80px]" />
             <div className="relative grid items-center gap-6 sm:grid-cols-[1.2fr_1fr]">
               <div>

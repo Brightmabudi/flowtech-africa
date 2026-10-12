@@ -27,7 +27,7 @@ export default function About() {
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#08050F]/85 via-brand-800/70 to-accent-500/30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2D1580]/85 via-brand-600/70 to-accent-500/30" />
         <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center sm:px-16">
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <span className="mb-4 inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-accent-400">About FlowTech Africa</span>
@@ -76,7 +76,7 @@ export default function About() {
                   className="h-[280px] w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-800/40 to-transparent" />
-                <div className="absolute bottom-4 left-4 flex items-center gap-2.5 rounded-control border border-white/10 bg-[#08050F]/80 px-4 py-2.5 backdrop-blur-md">
+                <div className="absolute bottom-4 left-4 flex items-center gap-2.5 rounded-control border border-white/10 bg-[#2D1580]/80 px-4 py-2.5 backdrop-blur-md">
                   <span aria-hidden="true" className="h-2 w-2 flex-shrink-0 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]" />
                   <div>
                     <span className="block text-xs font-bold text-white">Secure Global Platform</span>

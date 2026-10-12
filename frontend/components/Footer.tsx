@@ -131,7 +131,7 @@ function FooterColumn({ title, links, defaultOpen = false }: FooterColumnProps) 
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-white/[0.06] bg-[#08050F] px-5 py-14 sm:px-10 sm:py-16 lg:px-16 lg:py-20">
+    <footer className="relative overflow-hidden border-t border-white/[0.06] bg-[#2D1580] px-5 py-14 sm:px-10 sm:py-16 lg:px-16 lg:py-20">
       {/* Subtle animated gradient background */}
       <div
         aria-hidden="true"
@@ -218,7 +218,7 @@ export default function Footer() {
             </div>
             <Link
               href="/#contact"
-              className="group inline-flex w-full items-center justify-center gap-2 rounded-control bg-gradient-to-br from-brand-600 to-brand-800 px-5 py-3 text-sm font-semibold text-white shadow-brand-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-brand-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:w-auto"
+              className="group inline-flex w-full items-center justify-center gap-2 rounded-control bg-gradient-to-br from-brand-600 to-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-brand-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-brand-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:w-auto"
             >
               Talk to Our Experts
               <ArrowRight size={15} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5" />

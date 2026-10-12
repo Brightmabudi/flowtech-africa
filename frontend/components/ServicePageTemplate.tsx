@@ -203,7 +203,7 @@ export default function ServicePageTemplate({ service }: { service: ServiceDefin
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.65 }}
-            className="relative overflow-hidden rounded-panel bg-gradient-to-br from-[#08050F] to-brand-800 px-6 py-14 text-center sm:px-16 sm:py-16"
+            className="relative overflow-hidden rounded-panel bg-gradient-to-br from-[#2D1580] to-brand-600 px-6 py-14 text-center sm:px-16 sm:py-16"
           >
             <h2 className="mb-4 font-display text-[clamp(1.8rem,3.5vw,2.6rem)] font-bold leading-[1.1] tracking-tight text-white">
               Ready to talk {service.navTitle.toLowerCase()}?

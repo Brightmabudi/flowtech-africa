@@ -66,7 +66,7 @@ export default function Hero() {
               sizes="(min-width: 1024px) 640px, 100vw"
               className="h-[300px] w-full object-cover sm:h-[400px] lg:h-[440px]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-900/30 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-700/30 via-transparent to-transparent" />
           </div>
 
           <div className="absolute -top-5 left-6 right-6 hidden justify-between gap-2 sm:flex lg:left-16">
@@ -99,7 +99,7 @@ export default function Hero() {
           ))}
         </ul>
 
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-panel bg-white/10 bg-gradient-to-r from-[#08050F] via-brand-900 to-[#1A0A38] lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-panel bg-white/10 bg-gradient-to-r from-[#2D1580] via-brand-700 to-[#4A2AB0] lg:grid-cols-4">
           {STATS.map(s => (
             <div key={s.label} className="flex items-center gap-4 bg-transparent px-6 py-6 lg:px-8">
               <span className="text-brand-300" aria-hidden="true">{s.icon}</span>

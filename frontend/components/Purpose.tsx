@@ -24,7 +24,7 @@ export default function Purpose() {
       <Container>
 
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7 }} className="mb-16 lg:mb-20">
-          <div className="relative overflow-hidden rounded-panel bg-gradient-to-br from-[#08050F] to-brand-800">
+          <div className="relative overflow-hidden rounded-panel bg-gradient-to-br from-[#2D1580] to-brand-600">
             <div aria-hidden="true" className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(91,53,213,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(91,53,213,.07) 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
             <div aria-hidden="true" className="pointer-events-none absolute left-[20%] top-[10%] h-[240px] w-[240px] rounded-full bg-brand-600/15 blur-[80px]" />
             <div aria-hidden="true" className="pointer-events-none absolute bottom-[10%] right-[20%] h-[180px] w-[180px] rounded-full bg-accent-500/10 blur-[60px]" />

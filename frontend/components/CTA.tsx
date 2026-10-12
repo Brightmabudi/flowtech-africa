@@ -13,7 +13,7 @@ export default function CTA() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.65 }}
-          className="relative overflow-hidden rounded-panel bg-gradient-to-br from-[#08050F] to-brand-800 px-6 py-16 text-center sm:px-16 sm:py-20"
+          className="relative overflow-hidden rounded-panel bg-gradient-to-br from-[#2D1580] to-brand-600 px-6 py-16 text-center sm:px-16 sm:py-20"
         >
           <span className="mb-5 flex items-center justify-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-accent-400">Start Today</span>
           <h2 className="mb-5 font-display text-[clamp(2rem,4vw,3.2rem)] font-bold leading-[1.1] tracking-tight text-white">
