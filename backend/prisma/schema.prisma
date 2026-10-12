@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 //  Prisma Schema — FlowTech Africa
-//  Provider : PostgreSQL (Neon in dev/production)
+//  Provider : PostgreSQL (Supabase)
 //  Purpose  : Automated client intake flow
 //
 //  Status/type fields use String with documented valid values rather than
@@ -12,8 +12,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")   // pooled (Supabase pooler, port 6543) — used by the app
+  directUrl = env("DIRECT_URL")     // direct (port 5432) — used by prisma db push / migrate
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
