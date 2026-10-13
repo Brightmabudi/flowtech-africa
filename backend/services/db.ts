@@ -3,8 +3,8 @@ import { PrismaClient } from '@prisma/client'
 // Neon auto-suspends idle compute and closes its connections, so the first query
 // after an idle spell can fail with "terminating connection due to administrator
 // command" (E57P01 / P1017). Retry those once or twice; Prisma reconnects on retry.
-const RETRY_CODES = new Set(['P1001', 'P1002', 'P1017', 'P2024'])
-const RETRY_PATTERN = /E57P01|terminating connection|Server has closed the connection|Connection (reset|terminated)|Can't reach database server|ECONNRESET/i
+const RETRY_CODES = new Set(['P1001', 'P1002', 'P1017', 'P2024', 'P2037'])
+const RETRY_PATTERN = /E57P01|terminating connection|Server has closed the connection|Connection (reset|terminated)|Can't reach database server|ECONNRESET|prepared statement|too many (clients|connections)|Max client connections|Timed out fetching a new connection/i
 const MAX_RETRIES = 2
 
 function isConnectionError(error: unknown): boolean {

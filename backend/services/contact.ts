@@ -95,7 +95,9 @@ export async function POST(req: NextRequest) {
     })
   } catch (error) {
     console.error('[contact] Failed to save enquiry to database:', error)
-    return NextResponse.json({ success: false, error: 'Failed to submit your enquiry. Please try again.' }, { status: 500 })
+    const detail = `${(error as { code?: string })?.code ?? 'ERROR'}: ${String((error as Error)?.message ?? '').split('
+').filter(Boolean).slice(-1)[0]?.slice(0, 120) ?? ''}`
+    return NextResponse.json({ success: false, error: `Failed to submit your enquiry. Please try again. (${detail})` }, { status: 500 })
   }
 
   // ── 3. Send email notification (best-effort — enquiry is already saved) ─
