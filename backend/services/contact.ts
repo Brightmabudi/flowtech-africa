@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+import { sendMail, mailConfigured, missingMailConfig } from '@backend/services/mailer'
 import { cleanEnv } from '@backend/services/env-clean'
 import { prisma } from '@backend/services/db'
 
@@ -103,18 +103,16 @@ export async function POST(req: NextRequest) {
   }
 
   // ── 3. Send email notification (best-effort — enquiry is already saved) ─
-  const smtpUser = cleanEnv('SMTP_USER')
-  const smtpPass = cleanEnv('SMTP_PASS')
-  const from = cleanEnv('EMAIL_FROM')
-  const to = cleanEnv('EMAIL_TO')?.split(',').map(a => a.trim()).filter(Boolean)
+  const from = cleanEnv('EMAIL_FROM') ?? ''
+  const to = (cleanEnv('EMAIL_TO') ?? '').split(',').map(a => a.trim()).filter(Boolean)
 
-  if (!smtpUser || !smtpPass || !from || !to?.length) {
-    console.error('[contact] Missing SMTP_USER, SMTP_PASS, EMAIL_FROM or EMAIL_TO environment variables')
+  if (!mailConfigured() || !to.length) {
+    console.error('[contact] Missing email environment variables:', missingMailConfig().join(', '))
     return NextResponse.json({
       success: true,
       data: { id: enquiry.id },
       warning: 'Your enquiry was received, but our notification email is temporarily unavailable. Our team will still see it.',
-      emailError: 'MISSING_CONFIG: ' + ['SMTP_USER', 'SMTP_PASS', 'EMAIL_FROM', 'EMAIL_TO'].filter(k => !process.env[k]).join(', '),
+      emailError: 'MISSING_CONFIG: ' + missingMailConfig().join(', '),
     })
   }
 
@@ -162,18 +160,9 @@ export async function POST(req: NextRequest) {
     + '</div>'
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST?.trim() || 'smtp.office365.com',
-        port: Number(process.env.SMTP_PORT) || 587,
-        secure: Number(process.env.SMTP_PORT) === 465, // 587 uses STARTTLS
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    })
-
-    await transporter.sendMail({
-      from: `"FlowTech Africa Website" <${from}>`,
+    await sendMail({
+      fromName: 'FlowTech Africa Website',
+      from,
       to,
       replyTo: email,
       subject: `New Enquiry from ${firstName} ${lastName} - ${service}`,

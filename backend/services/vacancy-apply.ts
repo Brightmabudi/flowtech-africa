@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+import { sendMail, mailConfigured } from '@backend/services/mailer'
 import { cleanEnv } from '@backend/services/env-clean'
 import { prisma } from '@backend/services/db'
 import type { ApplyBody } from '@backend/services/application-types'
@@ -143,22 +143,15 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 
   // Best-effort notification email — application is already persisted regardless of send outcome.
-  const smtpUser = cleanEnv('SMTP_USER')
-  const smtpPass = cleanEnv('SMTP_PASS')
-  const from = cleanEnv('EMAIL_FROM')
+  const from = cleanEnv('EMAIL_FROM') ?? ''
   const to = vacancy.contactEmail
 
-  if (smtpUser && smtpPass && from && to) {
+  if (mailConfigured() && to) {
     try {
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST?.trim() || 'smtp.office365.com',
-        port: Number(process.env.SMTP_PORT) || 587,
-        secure: Number(process.env.SMTP_PORT) === 465, // 587 uses STARTTLS
-        auth: { user: smtpUser, pass: smtpPass },
-      })
-      await transporter.sendMail({
-        from: `"FlowTech Africa Careers" <${from}>`,
-        to,
+      await sendMail({
+        fromName: 'FlowTech Africa Careers',
+        from,
+        to: [to],
         replyTo: email,
         attachments: [{ filename: cvFile!.name, content: cvBytes! }],
         subject: `New Application: ${vacancy.title} - ${firstName} ${lastName}`,
