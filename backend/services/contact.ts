@@ -95,8 +95,8 @@ export async function POST(req: NextRequest) {
     })
   } catch (error) {
     console.error('[contact] Failed to save enquiry to database:', error)
-    const detail = `${(error as { code?: string })?.code ?? 'ERROR'}: ${String((error as Error)?.message ?? '').split('
-').filter(Boolean).slice(-1)[0]?.slice(0, 120) ?? ''}`
+    const lastLine = String((error as Error)?.message ?? '').trim().split(String.fromCharCode(10)).pop() ?? ''
+    const detail = `${(error as { code?: string })?.code ?? 'ERROR'}: ${lastLine.slice(0, 120)}`
     return NextResponse.json({ success: false, error: `Failed to submit your enquiry. Please try again. (${detail})` }, { status: 500 })
   }
 
