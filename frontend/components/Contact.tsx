@@ -24,6 +24,7 @@ export default function Contact() {
   const idPrefix = useId()
   const [form, setForm]       = useState(INITIAL_FORM)
   const [sent, setSent]       = useState(false)
+  const [emailIssue, setEmailIssue] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState('')
   const [website, setWebsite] = useState('') // honeypot: hidden from real visitors, bots tend to fill it in
@@ -40,7 +41,7 @@ export default function Contact() {
         body: JSON.stringify({ ...form, website, renderedAt }),
       })
       const data = await res.json()
-      if (data.success) setSent(true)
+      if (data.success) { setSent(true); setEmailIssue(data.emailError || '') }
       else setError(data.error || 'Failed to send. Please email us directly at michellef@flowtech.africa')
     } catch {
       setError('Failed to send. Please email us directly at michellef@flowtech.africa')
@@ -108,6 +109,7 @@ export default function Contact() {
                   <div className="mb-4 text-5xl" aria-hidden="true">✅</div>
                   <div className="mb-2 font-display text-xl font-bold text-ink-950">Message Sent!</div>
                   <p className="text-sm leading-relaxed text-ink-500">A FlowTech consultant will contact you within one business day.</p>
+                  {emailIssue && <p className="mt-3 text-xs text-accent-600">Saved, but the notification email failed ({emailIssue}).</p>}
                   <button
                     onClick={() => { setSent(false); setForm(INITIAL_FORM) }}
                     className="mt-5 rounded-control border border-brand-600/30 px-6 py-2.5 text-[13px] font-semibold text-brand-600 transition-colors hover:bg-brand-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"

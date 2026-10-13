@@ -110,6 +110,7 @@ export async function POST(req: NextRequest) {
       success: true,
       data: { id: enquiry.id },
       warning: 'Your enquiry was received, but our notification email is temporarily unavailable. Our team will still see it.',
+      emailError: 'MISSING_CONFIG: ' + ['SMTP_USER', 'SMTP_PASS', 'EMAIL_FROM', 'EMAIL_TO'].filter(k => !process.env[k]).join(', '),
     })
   }
 
@@ -184,6 +185,7 @@ export async function POST(req: NextRequest) {
       success: true,
       data: { id: enquiry.id },
       warning: 'Your enquiry was received, but we could not send the notification email. Our team can still see it on the dashboard.',
+      emailError: `${(error as { code?: string })?.code ?? 'ERROR'} ${(error as { responseCode?: number })?.responseCode ?? ''}`.trim(),
     })
   }
 }
