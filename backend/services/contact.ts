@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { cleanEnv } from '@backend/services/env-clean'
 import { prisma } from '@backend/services/db'
 
 const VALID_COMPANY_SIZES = ['1 - 50 employees', '51 - 200 employees', '201 - 1000 employees', '1000+ employees']
@@ -102,10 +103,10 @@ export async function POST(req: NextRequest) {
   }
 
   // ── 3. Send email notification (best-effort — enquiry is already saved) ─
-  const smtpUser = process.env.SMTP_USER
-  const smtpPass = process.env.SMTP_PASS
-  const from = process.env.EMAIL_FROM
-  const to = process.env.EMAIL_TO?.split(',').map(a => a.trim()).filter(Boolean)
+  const smtpUser = cleanEnv('SMTP_USER')
+  const smtpPass = cleanEnv('SMTP_PASS')
+  const from = cleanEnv('EMAIL_FROM')
+  const to = cleanEnv('EMAIL_TO')?.split(',').map(a => a.trim()).filter(Boolean)
 
   if (!smtpUser || !smtpPass || !from || !to?.length) {
     console.error('[contact] Missing SMTP_USER, SMTP_PASS, EMAIL_FROM or EMAIL_TO environment variables')

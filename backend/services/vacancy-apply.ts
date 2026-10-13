@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { cleanEnv } from '@backend/services/env-clean'
 import { prisma } from '@backend/services/db'
 import type { ApplyBody } from '@backend/services/application-types'
 
@@ -142,9 +143,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 
   // Best-effort notification email — application is already persisted regardless of send outcome.
-  const smtpUser = process.env.SMTP_USER
-  const smtpPass = process.env.SMTP_PASS
-  const from = process.env.EMAIL_FROM
+  const smtpUser = cleanEnv('SMTP_USER')
+  const smtpPass = cleanEnv('SMTP_PASS')
+  const from = cleanEnv('EMAIL_FROM')
   const to = vacancy.contactEmail
 
   if (smtpUser && smtpPass && from && to) {
