@@ -158,9 +158,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false, // STARTTLS
+      host: process.env.SMTP_HOST?.trim() || 'smtp.office365.com',
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: Number(process.env.SMTP_PORT) === 465, // 587 uses STARTTLS
       auth: {
         user: smtpUser,
         pass: smtpPass,
